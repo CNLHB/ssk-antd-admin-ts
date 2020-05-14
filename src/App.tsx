@@ -1,12 +1,31 @@
-import React from "react";
-import { Button } from "antd";
-import "./App.css";
-import styles from "./Button.module.less"; // 将 css modules 文件导入为 styles
-const App: React.FC<{}> = () => (
-  <div className="App">
-    <Button type="primary">Button</Button>
-    <span className={styles.error}>22</span>
-  </div>
-);
+import React, { Component } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import "./App.less";
+import Layout from "layout/index/index";
+class App extends Component<{}, { bg: string; collapsed: boolean }> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      bg: "bg-red",
+      collapsed: false,
+    };
+  }
+
+  toggleCollapsed = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  };
+  render() {
+    return (
+      <Router>
+        <div className="app-header">
+          <Layout></Layout>
+        </div>
+
+      </Router>
+    );
+  }
+}
 
 export default App;
