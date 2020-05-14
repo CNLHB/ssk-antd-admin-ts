@@ -1,6 +1,4 @@
-.App {
-  text-align: center;
-}
+@import "./App.less";
 
 .App-logo {
   height: 40vmin;
