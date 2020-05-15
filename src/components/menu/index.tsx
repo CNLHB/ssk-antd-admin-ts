@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import menuConfig from "config/menu/munuConfig";
-import { MenuUnfoldOutlined } from "@ant-design/icons";
 
 import { Menu } from "antd";
 const { SubMenu } = Menu;
@@ -14,7 +13,7 @@ export default class NavMenu extends Component<any, { menuTreeNode: any }> {
           <SubMenu
             title={
               <span>
-                <MenuUnfoldOutlined />
+                {item.icon}
                 <span>{item.title}</span>
               </span>
             }
@@ -26,7 +25,10 @@ export default class NavMenu extends Component<any, { menuTreeNode: any }> {
       }
       return (
         <Menu.Item title={item.title} key={item.key}>
-          <Link to={"/admin" + item.key}>{item.title}</Link>
+          <Link to={"/admin" + item.key}>
+            {item.icon}
+            {item.title}
+          </Link>
         </Menu.Item>
       );
     });
@@ -37,7 +39,7 @@ export default class NavMenu extends Component<any, { menuTreeNode: any }> {
     }
     return (
       <div>
-        <Menu onClick={handleClick} mode="inline" theme="dark">
+        <Menu onClick={handleClick} mode="inline" theme={this.props.theme}>
           {this.renderMenu(menuConfig)}
         </Menu>
       </div>

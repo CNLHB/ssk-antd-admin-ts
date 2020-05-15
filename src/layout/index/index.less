@@ -16,25 +16,28 @@
 
 .sider-logo {
   height: 32px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 16px;
+  //   background: rgba(255, 255, 255, 0.2);
+  padding: 0 24px;
+  margin: 16px 0;
+  overflow: hidden;
+  cursor: pointer;
 }
-
+.mock-block {
+  display: inline-block;
+  height: 32px;
+  vertical-align: middle;
+}
 .site-layout .site-layout-background {
   background: #fff;
 }
-.logo {
-  line-height: 70px;
-  padding-left: 20px;
-  background-color: #002140;
-  img {
-    height: 35px;
-  }
-  h1 {
-    color: #ffffff;
-    font-size: 20px;
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0 0 0 10px;
-  }
+
+.logo-h {
+  display: inline-block;
+  margin: 0 0 0 12px;
+  color: #1890ff;
+  font-weight: 600;
+  font-size: 20px;
+  vertical-align: middle;
+  animation: fade-in;
+  animation-duration: 0.3s;
 }

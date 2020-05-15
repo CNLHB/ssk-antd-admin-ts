@@ -1,31 +1,44 @@
+import React from "react";
+import {
+  SettingFilled,
+  DashboardOutlined,
+  MonitorOutlined,
+} from "@ant-design/icons";
 const menuList = [
   {
-    title: "首页",
-    key: "/home",
-  },
-  {
-    title: "UI",
-    key: "/ui",
+    title: "Dashbaord",
+    key: "/dashboard",
+    icon: <DashboardOutlined />,
     children: [
       {
-        title: "按钮",
-        key: "/ui/buttons",
+        title: "登录日志",
+        key: "/dashboard/log",
+        icon: <SettingFilled />,
       },
       {
-        title: "弹框",
-        key: "/ui/modals",
+        title: "分析页",
+        key: "/dashboard/analysis",
+        icon: <SettingFilled />,
       },
       {
-        title: "Loading",
-        key: "/ui/loadings",
+        title: "监控页",
+        key: "/dashboard/monitor",
+        icon: <MonitorOutlined />,
+      },
+      {
+        title: "工作台",
+        key: "/dashboard/workplace",
+        icon: <SettingFilled />,
       },
       {
         title: "通知提醒",
         key: "/ui/notification",
+        icon: <SettingFilled />,
       },
       {
         title: "全局Message",
         key: "/ui/messages",
+        icon: <SettingFilled />,
       },
       {
         title: "Tab页签",
@@ -42,22 +55,26 @@ const menuList = [
     ],
   },
   {
-    title: "表单",
+    title: "动态管理",
     key: "/form",
+    icon: <SettingFilled />,
     children: [
       {
-        title: "登录",
+        title: "动态分类",
         key: "/form/login",
+        icon: <SettingFilled />,
       },
       {
         title: "注册",
         key: "/form/reg",
+        icon: <SettingFilled />,
       },
     ],
   },
   {
-    title: "图标",
+    title: "话题管理",
     key: "/charts",
+    icon: <SettingFilled />,
     children: [
       {
         title: "柱形图",
@@ -74,8 +91,9 @@ const menuList = [
     ],
   },
   {
-    title: "表格",
+    title: "用户管理",
     key: "/table",
+    icon: <SettingFilled />,
     children: [
       {
         title: "基础表格",
@@ -88,16 +106,35 @@ const menuList = [
     ],
   },
   {
-    title: "富文本",
+    title: "个人页",
     key: "/rich",
+    icon: <SettingFilled />,
+    children: [
+      {
+        title: "柱形图",
+        key: "/charts/bar",
+        icon: <SettingFilled />,
+      },
+      {
+        title: "饼图",
+        key: "/charts/pie",
+        icon: <SettingFilled />,
+      },
+      {
+        title: "折线图",
+        key: "/charts/line",
+      },
+    ],
   },
   {
     title: "城市管理",
+    icon: <SettingFilled />,
     key: "/city",
   },
   {
-    title: "订单管理",
+    title: "交易管理",
     key: "/order",
+    icon: <SettingFilled />,
     btnList: [
       {
         title: "订单详情",
@@ -110,16 +147,19 @@ const menuList = [
     ],
   },
   {
-    title: "员工管理",
+    title: "二手市场管理",
+    icon: <SettingFilled />,
     key: "/user",
   },
   {
-    title: "车辆地图",
+    title: "广告管理",
+    icon: <SettingFilled />,
     key: "/bikeMap",
   },
 
   {
     title: "权限设置",
+    icon: <SettingFilled />,
     key: "/permission",
   },
 ];
