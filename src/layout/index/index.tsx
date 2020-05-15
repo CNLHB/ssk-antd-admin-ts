@@ -3,20 +3,30 @@ import { Layout } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 
 import NavMenu from "components/menu/index";
+import navLogo from "assets/images/logo-ant.svg";
 import "./index.less";
-const { Header, Sider, Content, Footer } = Layout;
-export default class SiderDemo extends React.Component<any, any> {
-  state = {
-    collapsed: false,
-  };
+const { Header, Sider, Footer } = Layout;
+export default class LayoutApp extends React.Component<{ theme: any }, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      collapsed: false,
+      theme: "light",
+      marginLeft: 200,
+    };
+  }
 
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed,
+      //   marginLeft: this.state.marginLeft === 200 ? 80 : 200,
     });
   };
 
   render() {
+    const { theme } = this.props;
+
+    console.log(this.props.children);
     return (
       <Layout className="wrapper">
         <Sider
@@ -28,13 +38,29 @@ export default class SiderDemo extends React.Component<any, any> {
           onBreakpoint={(broken) => {
             console.log(broken);
           }}
+          theme={theme}
           onCollapse={(collapsed, type) => {
             console.log(collapsed, type);
             // this.toggle();
           }}
+          width={256}
+          //   style={{
+          //     overflow: "auto",
+          //     height: "100vh",
+          //     position: "fixed",
+          //     left: 0,
+          //   }}
         >
-          <div className="sider-logo" />
-          <NavMenu></NavMenu>
+          <div className="sider-logo">
+            <img
+              src={navLogo}
+              alt="nav-log"
+              className="mock-block"
+              style={{ height: "100%" }}
+            />
+            <h1 className="logo-h">ssk admin</h1>
+          </div>
+          <NavMenu theme={theme}></NavMenu>
         </Sider>
         <Layout className="site-layout">
           <Header className="site-layout-background" style={{ padding: 0 }}>
@@ -46,18 +72,10 @@ export default class SiderDemo extends React.Component<any, any> {
               }
             )}
           </Header>
-          <Content
-            className="site-layout-background"
-            style={{
-              margin: "24px 16px",
-              padding: 24,
-              minHeight: 280,
-            }}
-          >
-            Content
-          </Content>
+          {this.props.children}
+          {/* <ContentArea ></ContentArea> */}
           <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
+            ©2020 剑七团队技术部出品
           </Footer>
         </Layout>
       </Layout>
