@@ -1,4 +1,7 @@
-// interface{
-//     color: string
-// }
-export const theme = {};
+type ThemeColorType = "light" | "dark"
+interface Theme {
+    color: ThemeColorType
+}
+export const theme = {
+
+};

@@ -16,9 +16,13 @@
     "css-loader": "2.1.1",
     "customize-cra": "^0.9.1",
     "less-loader": "5.0.0",
+    "mobx": "^5.15.4",
+    "mobx-react": "^6.2.2",
+    "mobx-react-router": "^4.1.0",
     "react": "^16.13.1",
     "react-app-rewired": "^2.1.6",
     "react-dom": "^16.13.1",
+    "react-mobx": "^0.0.4",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "typescript": "^3.7.5"
