@@ -1,24 +1,22 @@
 import React, { Component } from "react";
-import { Layout, Breadcrumb } from "antd";
-import { Link } from "react-router-dom";
+import { Layout } from "antd";
+import { observer, inject } from 'mobx-react'
+import { ThemeInterface } from "models/theme/index";
 import { ContentRoutes, renderRouter } from "router/index";
 const { Content } = Layout;
-class ContentArea extends Component<{}, {}> {
+interface ContentProps {
+    themeStore?: ThemeInterface;
+}
+
+
+@inject("themeStore")
+@observer
+class ContentArea extends Component<ContentProps, {}> {
     render() {
+        const { getContentTop } = this.props.themeStore!
         return (
-            <Content style={{ margin: "0 16px" }}>
-                <Breadcrumb style={{ margin: "16px 0" }}>
-                    <Breadcrumb.Item>
-                        <Link to={"/admin"}>User</Link>
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>Bill</Breadcrumb.Item>
-                </Breadcrumb>
-                <div
-                    className="site-layout-background"
-                    style={{ padding: 24, minHeight: 460 }}
-                >
-                    {renderRouter(ContentRoutes)}
-                </div>
+            <Content style={{ ...getContentTop }}>
+                {renderRouter(ContentRoutes)}
             </Content>
         );
     }

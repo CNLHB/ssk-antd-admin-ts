@@ -11,30 +11,31 @@ export interface MenuType {
     icon?: any;
     children?: MenuType[];
 }
+
 const menuList: MenuType[] = [
     {
         title: "Dashbaord",
-        key: "/dashboard",
+        key: "/admin/dashboard",
         icon: <DashboardOutlined />,
         children: [
             {
                 title: "登录日志",
-                key: "/dashboard/log",
+                key: "/admin/dashboard/log",
                 icon: <SettingFilled />,
             },
             {
                 title: "分析页",
-                key: "/dashboard/analysis",
+                key: "/admin/dashboard/analysis",
                 icon: <SettingFilled />,
             },
             {
                 title: "监控页",
-                key: "/dashboard/monitor",
+                key: "/admin/dashboard/monitor",
                 icon: <MonitorOutlined />,
             },
             {
                 title: "工作台",
-                key: "/dashboard/workplace",
+                key: "/admin/dashboard/workplace",
                 icon: <SettingFilled />,
             },
             {

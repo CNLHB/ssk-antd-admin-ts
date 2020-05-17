@@ -1,17 +1,13 @@
 import React from "react";
 import { Layout } from "antd";
-import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import ContentArea from "layout/content/index";
 import Setting from "layout/setting/index";
-import DrawerSider from "layout/drawer-sider/index";
 import SiderWrap from "layout/sider/index";
 import FooterWrap from "layout/footer/index";
 import HeaderWrap from "layout/header/index";
-
 import { inject, observer } from 'mobx-react'
 import { ThemeInterface } from "models/theme/index";
 import "./index.less";
-const { Header } = Layout;
 interface LayoutProps {
     themeStore?: ThemeInterface; //  这里比较关键 ？表示可或缺，如果没有就会报错。
 }
@@ -22,7 +18,12 @@ interface LayoutState {
     marginLeft?: number //  这里比较关键 ？表示可或缺，如果没有就会报错。
 }
 
-
+/*
+ * @description: 
+ * @test: test font
+ * @param {type} 
+ * @return: 
+ */
 @inject("themeStore")
 @observer
 export default class LayoutApp extends React.Component<LayoutProps, LayoutState> {
@@ -31,23 +32,43 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
         this.state = {
             collapsed: false,
             isMd: false,
-            marginLeft: 200,
             visible: false
         };
     }
-    showDrawer = () => {
+    showDrawer = (): void => {
         this.setState({
             visible: true,
+            collapsed: true
         });
     };
 
-    onClose = () => {
+    onClose = (): void => {
         this.setState({
             visible: false,
         });
     };
 
     toggleCollapsed = (collapsed: boolean): void => {
+        const { setLayoutLeft, affixMenu, affixHeader } = this.props.themeStore!
+        const { isMd } = this.state
+        if (collapsed && affixMenu) {
+            console.log(collapsed, 1);
+            setLayoutLeft(80)
+        }
+
+        if (!collapsed && affixMenu) {
+            console.log(collapsed, 2);
+            setLayoutLeft(256)
+        }
+        if (collapsed && affixHeader && !isMd) {
+            console.log(collapsed, 3);
+
+            setLayoutLeft(80)
+        }
+        if (!collapsed && affixHeader && !isMd) {
+            console.log(collapsed, 3);
+            setLayoutLeft(256)
+        }
         this.setState({
             collapsed: collapsed,
         });
@@ -59,18 +80,18 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
     };
     render() {
         const { collapsed, isMd, visible } = this.state
+        const { getLayoutLeft } = this.props.themeStore!
         return (
             <Layout className="wrapper">
                 <Setting></Setting>
-                {isMd ?
-                    <DrawerSider
-                        visible={visible}
-                        onClose={this.onClose}></DrawerSider> :
-                    <SiderWrap
-                        collapsed={collapsed}
-                        toggleCollapsed={this.toggleCollapsed}
-                        toggleMd={this.toggleMd}></SiderWrap>}
-                <Layout className="site-layout">
+                <SiderWrap
+                    visible={visible}
+                    onClose={this.onClose}
+                    collapsed={collapsed}
+                    toggleCollapsed={this.toggleCollapsed}
+                    toggleMd={this.toggleMd}>
+                </SiderWrap>
+                <Layout className="site-layout" style={{ ...getLayoutLeft }}>
                     <HeaderWrap
                         collapsed={collapsed}
                         isMd={isMd}

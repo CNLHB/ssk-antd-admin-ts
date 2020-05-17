@@ -1,55 +1,50 @@
 import React, { LazyExoticComponent, lazy } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
+import Layout from "layout/index/index"
+import NoMatch from "pages/exception/404/index"
 export interface RouteType {
-    pathname: string;
-    component: LazyExoticComponent<any>;
+    pathname?: string;
+    component: LazyExoticComponent<any> | any;
     exact: boolean;
     title?: string;
     icon?: string;
     children?: RouteType[];
 }
-
+//<Route component={NoMatch}></Route> lazy(() => import("layout/index/index"))    onKeyUp={(e: SyntheticEvent<Element, Event>) => { }}
 export const AppRoutes: RouteType[] = [
     {
-        pathname: "/",
+        pathname: "/admin",
         exact: false,
-        component: lazy(() => import("layout/index/index")),
-        children: [
-            {
-                pathname: "/dashboard/log",
-                exact: true,
-                component: lazy(() => import("pages/log/index")),
-            },
-            {
-                pathname: "/dashboard/analysis",
-                exact: true,
-                component: lazy(() => import("pages/user/index")),
-            },
-        ],
+        component: Layout,
     },
     {
         pathname: "/login",
         component: lazy(() => import("pages/login/index")),
         exact: true,
-    },
-    {
-        pathname: "/404",
-        component: lazy(() => import("pages/exception/404/index")),
-        exact: true,
-    },
+    }
 ];
 //
 export const ContentRoutes: RouteType[] = [
     {
-        pathname: "/dashboard/log",
+        pathname: "/admin/welcome",
         exact: true,
-        component: lazy(() => import("pages/log/index")),
+        component: lazy(() => import("pages/welcome/Welcome")),
     },
     {
-        pathname: "/dashboard/analysis",
+        pathname: "/admin/dashboard/log",
         exact: true,
-        component: lazy(() => import("pages/user/index")),
+        component: lazy(() => import("pages/dashboard/log/index")),
     },
+    {
+        pathname: "/admin/dashboard/analysis",
+        exact: true,
+        component: lazy(() => import("pages/dashboard/analysis/index")),
+    },
+    {
+        pathname: "/admin/dashboard/monitor",
+        exact: true,
+        component: lazy(() => import("pages/dashboard/monitor/index")),
+    }
 ];
 
 export const renderRouter = (router: any) => {
@@ -64,5 +59,7 @@ export const renderRouter = (router: any) => {
                 />
             );
         })}
+        <Redirect exact path="/" to={{ pathname: '/admin/welcome' }}></Redirect>
+        <Route component={NoMatch}></Route>
     </Switch>
 };

@@ -29,15 +29,20 @@ class Settings extends React.Component<UserAppProps, any> {
             visible: false,
         });
     };
-    onChange = (checked: any, str: string) => {
-        console.log(`switch to ${checked}+${str}`);
+    onChange = (checked: boolean, str: string) => {
+        const { setAffixHeader, setAffixMenu } = this.props.themeStore!;
+        if (str === "header") {
+            setAffixHeader(checked)
+        } else {
+            setAffixMenu(checked)
+        }
     };
     private setThemeHandler = (theme: ThemeColorType): void => {
         const { setTheme } = this.props.themeStore!;
         setTheme(theme);
     };
     render() {
-        
+
         return (
             <>
                 <Button

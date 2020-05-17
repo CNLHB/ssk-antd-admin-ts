@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import menuConfig from "config/menu/munuConfig";
-import { inject, observer } from 'mobx-react'
-import { ThemeInterface } from "models/theme/index";
 import { Menu } from "antd";
+import { matchTitle } from 'config/menu/matchTitle'
+import { ThemeColorType } from 'models/theme/index'
 const { SubMenu } = Menu;
-interface UserAppProps {
-    themeStore?: ThemeInterface; //  这里比较关键 ？表示可或缺，如果没有就会报错。
+interface MenuProps {
+    theme?: ThemeColorType;
+    setBreadTitle(titleArr: string[]): void
+    //  这里比较关键 ？表示可或缺，如果没有就会报错。
 }
-@inject("themeStore")
-@observer
-export default class NavMenu extends Component<UserAppProps, { menuTreeNode: any }> {
+export default class NavMenu extends Component<MenuProps, { menuTreeNode: any }> {
     renderMenu = (data: any) => {
         return data.map((item: any) => {
             if (item.children) {
@@ -39,9 +39,11 @@ export default class NavMenu extends Component<UserAppProps, { menuTreeNode: any
         });
     };
     render() {
-        const { theme } = this.props.themeStore!;
+        const { theme, setBreadTitle } = this.props;
         function handleClick(e: any) {
-            console.log("click", e);
+            const key = e.key
+            setBreadTitle(matchTitle[key])
+            console.log("click", matchTitle[key]);
         }
         return (
             <div>
