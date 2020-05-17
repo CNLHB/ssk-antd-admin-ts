@@ -9,7 +9,7 @@ class PageBread extends Component<{ bread: string[] }, {}> {
     render() {
         const { bread = [] } = this.props
         return (
-            <div style={{ marginLeft: 2, }} className="site-page-header site-layout-background" >
+            <div style={{ marginLeft: 2, }} className="site-page-header breadcrumb" >
                 <Breadcrumb>
                     <Breadcrumb.Item>
                         <Link to={"/"}> 首页</Link>

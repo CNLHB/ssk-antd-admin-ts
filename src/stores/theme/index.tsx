@@ -6,7 +6,7 @@ class ThemeStore implements ThemeInterface {
     @observable public affixHeader: boolean = false;
     @observable public affixMenu: boolean = false;
     @observable public fixedHeader: CSSProperties = {
-        position: 'fixed', zIndex: 1, width: "calc(100% - 256)",
+        position: 'fixed', zIndex: 1, top: 0, right: 0, width: "calc(100% - 256)",
     };
     @observable public contentTop: CSSProperties = { marginTop: 66 };
     @observable public fixedMenu: CSSProperties = {
