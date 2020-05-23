@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
+import { Button } from 'antd'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'models/breadcrumb/index'
 interface LogProps {
@@ -20,7 +21,7 @@ class Log extends Component<LogProps, {}> {
                     style={{ padding: 24, margin: 24, minHeight: 460 }}
                 >
 
-                    LOG
+                    <Button onClick={() => { throw Error("手动抛出异常") }}>Click</Button> LOG
 
                 </div>
             </div>

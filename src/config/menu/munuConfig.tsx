@@ -15,27 +15,27 @@ export interface MenuType {
 const menuList: MenuType[] = [
     {
         title: "Dashbaord",
-        key: "/admin/dashboard",
+        key: "/dashboard",
         icon: <DashboardOutlined />,
         children: [
             {
                 title: "登录日志",
-                key: "/admin/dashboard/log",
+                key: "/dashboard/log",
                 icon: <SettingFilled />,
             },
             {
                 title: "分析页",
-                key: "/admin/dashboard/analysis",
+                key: "/dashboard/analysis",
                 icon: <SettingFilled />,
             },
             {
                 title: "监控页",
-                key: "/admin/dashboard/monitor",
+                key: "/dashboard/monitor",
                 icon: <MonitorOutlined />,
             },
             {
                 title: "工作台",
-                key: "/admin/dashboard/workplace",
+                key: "/dashboard/workplace",
                 icon: <SettingFilled />,
             },
             {
@@ -47,19 +47,7 @@ const menuList: MenuType[] = [
                 title: "全局Message",
                 key: "/ui/messages",
                 icon: <SettingFilled />,
-            },
-            {
-                title: "Tab页签",
-                key: "/ui/tabs",
-            },
-            {
-                title: "图片画廊",
-                key: "/ui/gallery",
-            },
-            {
-                title: "轮播图",
-                key: "/ui/carousel",
-            },
+            }
         ],
     },
     {
@@ -113,28 +101,7 @@ const menuList: MenuType[] = [
             },
         ],
     },
-    {
-        title: "个人页",
-        key: "/rich",
-        icon: <SettingFilled />,
-        children: [
-            {
-                title: "柱形图",
-                key: "/charts/bar",
-                icon: <SettingFilled />,
-            },
-            {
-                title: "饼图",
-                key: "/charts/pie",
-                icon: <SettingFilled />,
-            },
-            {
-                title: "折线图",
-                key: "/charts/line",
-                icon: <DashboardOutlined />,
-            },
-        ],
-    },
+
     {
         title: "城市管理",
         icon: <SettingFilled />,
@@ -142,12 +109,12 @@ const menuList: MenuType[] = [
         children: [
             {
                 title: "订单详情",
-                key: "detail",
+                key: "/city/detail",
                 icon: <DashboardOutlined />,
             },
             {
                 title: "结束订单",
-                key: "finish",
+                key: "/city/finish",
                 icon: <DashboardOutlined />,
             },
         ],
@@ -159,29 +126,29 @@ const menuList: MenuType[] = [
         children: [
             {
                 title: "订单详情",
-                key: "detail",
+                key: "/order/detail",
                 icon: <DashboardOutlined />,
             },
             {
                 title: "结束订单",
-                key: "finish",
+                key: "/order/finish",
                 icon: <DashboardOutlined />,
             },
         ],
     },
     {
         title: "二手市场管理",
-        key: "/user",
+        key: "/two",
         icon: <SettingFilled />,
         children: [
             {
                 title: "订单详情",
-                key: "detail",
+                key: "/two/detail",
                 icon: <DashboardOutlined />,
             },
             {
                 title: "结束订单",
-                key: "finish",
+                key: "/two/finish",
                 icon: <DashboardOutlined />,
             },
         ],
@@ -193,12 +160,12 @@ const menuList: MenuType[] = [
         children: [
             {
                 title: "订单详情",
-                key: "detail",
+                key: "/bikeMapdetail",
                 icon: <DashboardOutlined />,
             },
             {
                 title: "结束订单",
-                key: "finish",
+                key: "/bikeMapfinish",
                 icon: <DashboardOutlined />,
             },
         ],
@@ -211,14 +178,30 @@ const menuList: MenuType[] = [
         children: [
             {
                 title: "订单详情",
-                key: "detail",
+                key: "/permission/detail",
                 icon: <DashboardOutlined />,
             },
             {
                 title: "结束订单",
-                key: "finish",
+                key: "/permission/finish",
                 icon: <DashboardOutlined />,
             },
+        ],
+    }, {
+        title: "账号管理",
+        key: "/account",
+        icon: <SettingFilled />,
+        children: [
+            {
+                title: "个人中心",
+                key: "/account/center",
+                icon: <SettingFilled />,
+            },
+            {
+                title: "个人设置",
+                key: "/account/settings",
+                icon: <SettingFilled />,
+            }
         ],
     },
 ];

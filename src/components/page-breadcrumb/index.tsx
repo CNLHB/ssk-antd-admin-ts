@@ -8,8 +8,9 @@ import './index.less'
 class PageBread extends Component<{ bread: string[] }, {}> {
     render() {
         const { bread = [] } = this.props
+        // style={{ marginLeft: 2, }}
         return (
-            <div style={{ marginLeft: 2, }} className="site-page-header breadcrumb" >
+            <div className="site-page-header breadcrumb" >
                 <Breadcrumb>
                     <Breadcrumb.Item>
                         <Link to={"/"}> 首页</Link>
@@ -19,7 +20,7 @@ class PageBread extends Component<{ bread: string[] }, {}> {
                             {item}
                         </Breadcrumb.Item>
                     })}
-                </Breadcrumb>,
+                </Breadcrumb>
             </div >
         );
     }

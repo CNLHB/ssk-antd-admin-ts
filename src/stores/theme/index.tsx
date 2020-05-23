@@ -5,10 +5,13 @@ class ThemeStore implements ThemeInterface {
     @observable public theme: ThemeColorType = "light";
     @observable public affixHeader: boolean = false;
     @observable public affixMenu: boolean = false;
+    @observable public isMd: boolean = false;
+    @observable public collapsed: boolean = false;
     @observable public fixedHeader: CSSProperties = {
-        position: 'fixed', zIndex: 1, top: 0, right: 0, width: "calc(100% - 256)",
+        position: 'fixed', zIndex: 1, top: 0, right: 0,
+        width: "calc(100% - 258)",
     };
-    @observable public contentTop: CSSProperties = { marginTop: 66 };
+    @observable public contentTop: CSSProperties = { marginTop: 64 };
     @observable public fixedMenu: CSSProperties = {
         overflow: 'auto',
         height: '100vh',
@@ -16,8 +19,8 @@ class ThemeStore implements ThemeInterface {
         left: 0,
     };
     @observable public layoutLeft: CSSProperties = {
-        marginLeft: 256
-    };//80
+        marginLeft: 258 //80
+    };
     @computed
     public get getLayoutLeft(): CSSProperties {
         if (this.affixMenu) {
@@ -45,15 +48,20 @@ class ThemeStore implements ThemeInterface {
     @computed
     public get getFixedHeader(): CSSProperties {
         if (this.affixHeader) {
-            console.log(this.affixHeader);
             const layout = { ...this.fixedHeader }
             layout.width = `calc(100% - ${this.layoutLeft.marginLeft}px)`
-            console.log(layout);
-            console.log({ ...this.fixedHeader });
-
             return layout;
         }
         return {};
+    }
+    @action.bound
+    public setIsMd(md: boolean): void {
+        if (md) {
+            this.setLayoutLeft(0)
+        } else {
+            this.setLayoutLeft(258)
+        }
+        this.isMd = md;
     }
     @action.bound
     public setTheme(theme: ThemeColorType): void {
@@ -63,6 +71,11 @@ class ThemeStore implements ThemeInterface {
     @action.bound
     public setAffixHeader(affixHeader: boolean): void {
         this.affixHeader = affixHeader;
+        console.log(this.collapsed);
+
+        if (this.collapsed) {
+            this.fixedHeader.width = `calc(100% - 82px)`
+        }
     }
     @action.bound
     public setAffixMenu(affixMenu: boolean): void {
@@ -73,10 +86,14 @@ class ThemeStore implements ThemeInterface {
         console.log(affixMenu);
     }
     @action.bound
+    public setCollapsed(collapsed: boolean): void {
+        this.collapsed = collapsed
+    }
+    @action.bound
     public setLayoutLeft(left: number): void {
         console.log(left);
 
-        this.layoutLeft = { marginLeft: left }
+        this.layoutLeft.marginLeft = left
     }
 
 }

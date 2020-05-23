@@ -24,7 +24,7 @@ export default class HeaderWrap extends React.Component<LayoutProps, {}> {
         const { collapsed, isMd, toggleCollapsed, showDrawer } = this.props
         const { getFixedHeader } = this.props.themeStore!
         return (
-            <Header className="site-layout-background headerflex" style={{ padding: 0, marginLeft: 2, ...getFixedHeader }}>
+            <Header className="site-layout-background headerflex" style={{ padding: 0, ...getFixedHeader }}>
                 {React.createElement(
                     collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
                     {
@@ -33,6 +33,7 @@ export default class HeaderWrap extends React.Component<LayoutProps, {}> {
                             if (isMd) {
                                 showDrawer()
                             } else {
+                                
                                 toggleCollapsed(!collapsed)
                             }
                         },

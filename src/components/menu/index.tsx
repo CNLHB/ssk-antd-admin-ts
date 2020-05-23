@@ -30,7 +30,7 @@ export default class NavMenu extends Component<MenuProps, { menuTreeNode: any }>
             }
             return (
                 <Menu.Item title={item.title} key={item.key}>
-                    <Link to={item.key}>
+                    <Link to={'/admin'+item.key}>
                         {item.icon}
                         {item.title}
                     </Link>

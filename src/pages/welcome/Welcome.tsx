@@ -14,7 +14,7 @@ const Welcome: React.FC<{}> = (props: any) => (
     <div>
         <Card>
             <Alert
-                message="umi ui 现已发布，点击右下角 umi 图标即可使用"
+                message="ssk admin 现已发布，点击右下角 连接即可前往下载"
                 type="success"
                 showIcon
                 banner
@@ -24,11 +24,17 @@ const Welcome: React.FC<{}> = (props: any) => (
                 }}
             />
             <Typography.Text strong>
-                <a target="_blank" rel="noopener noreferrer" href="https://pro.ant.design/docs/block">
-                    基于 block 开发，快速构建标准页面
-        </a>
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/CNLHB/ssk-antd-admin-ts">
+                    基于 antd 开发，快速构建标准页面
+                </a>
             </Typography.Text>
-            <CodePreview> npm run ui</CodePreview>
+            <br />
+            <Typography.Text strong>
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/CNLHB/ssk-antd-admin-ts">
+                    克隆到本地项目
+                </a>
+            </Typography.Text>
+            <CodePreview> git clone https://github.com/CNLHB/ssk-antd-admin-ts</CodePreview>
             <Typography.Text
                 strong
                 style={{
@@ -38,12 +44,25 @@ const Welcome: React.FC<{}> = (props: any) => (
                 <a
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="https://pro.ant.design/docs/available-script#npm-run-fetchblocks"
+                    href="https://github.com/CNLHB/ssk-antd-admin-ts"
                 >
-                    获取全部区块
+                    切换到项目根目录
         </a>
             </Typography.Text>
-            <CodePreview> npm run fetch:blocks</CodePreview>
+            <CodePreview> cd  [your project name] </CodePreview>
+            <Typography.Text strong>
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/CNLHB/ssk-antd-admin-ts">
+                    下载项目依赖
+                </a>
+            </Typography.Text>
+            <CodePreview> npm installl || yarn </CodePreview>
+            <Typography.Text strong>
+                <a target="_blank" rel="noopener noreferrer" href="https://github.com/CNLHB/ssk-antd-admin-ts">
+                    启动项目
+                </a>
+            </Typography.Text>
+            <CodePreview> npm start || yarn start</CodePreview>
+
         </Card>
         <p
             style={{
@@ -52,7 +71,7 @@ const Welcome: React.FC<{}> = (props: any) => (
             }}
         >
             Want to add more pages? Please refer to{' '}
-            <a href="https://pro.ant.design/docs/block-cn" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/CNLHB/ssk-antd-admin-ts" target="_blank" rel="noopener noreferrer">
                 use block
       </a>
       。

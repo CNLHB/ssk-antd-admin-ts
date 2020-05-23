@@ -18,12 +18,11 @@ interface SiderProps {
     collapsed?: boolean;
     visible: boolean;
     toggleCollapsed: Function;
-    toggleMd: Function;
     onClose(): void
 }
 interface SiderState {
-    marginLeft: number
-    collapsedWidth: number
+    collapsedWidth: number,
+    marginRight: number
 }
 
 @inject("breadStore")
@@ -33,15 +32,39 @@ export default class SiderWrap extends React.Component<SiderProps, SiderState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            marginLeft: 200,
-            collapsedWidth: 80
+            collapsedWidth: 80,
+            marginRight: 2
         };
     }
+    togglePointHandler = (broken: boolean) => {
+        const { toggleCollapsed, onClose } = this.props
+        const { setIsMd, setCollapsed } = this.props.themeStore!;
+        if (broken) {
+            this.setState({
+                collapsedWidth: 0,
+                marginRight: 0
+            }, () => {
+                // toggleCollapsed(broken);
+                setIsMd(broken)
+                setCollapsed(broken)
+            })
+        } else {
+            this.setState({
+                collapsedWidth: 80,
+                marginRight: 2
+            }, () => {
+                setIsMd(broken)
+                toggleCollapsed(broken);
+                onClose()
+            })
+        }
 
+        console.log(broken);
+    }
 
     render() {
-        const { collapsed = false, visible, toggleCollapsed, toggleMd, onClose } = this.props
-        const { theme, getFixedMenu, setLayoutLeft } = this.props.themeStore!;
+        const { collapsed = false, visible, onClose } = this.props
+        const { theme, getFixedMenu } = this.props.themeStore!;
         const { setBreadTitle } = this.props.breadStore!;
         return (
             <>
@@ -52,25 +75,7 @@ export default class SiderWrap extends React.Component<SiderProps, SiderState> {
                     collapsible
                     collapsed={collapsed}
                     onBreakpoint={(broken) => {
-                        if (broken) {
-                            this.setState({
-                                collapsedWidth: 0
-                            }, () => {
-                                setLayoutLeft(0)
-                                toggleCollapsed(broken);
-                                toggleMd(broken)
-                            })
-                        } else {
-                            this.setState({
-                                collapsedWidth: 80
-                            }, () => {
-                                toggleCollapsed(broken);
-                                setLayoutLeft(256)
-                                toggleMd(broken)
-                            })
-                        }
-
-                        console.log(broken);
+                        this.togglePointHandler(broken)
                     }}
                     theme={theme}
                     onCollapse={(collapsed, type) => {
@@ -78,7 +83,7 @@ export default class SiderWrap extends React.Component<SiderProps, SiderState> {
 
                     }}
                     width={256}
-                    style={{ ...getFixedMenu }}
+                    style={{ ...getFixedMenu, marginRight: this.state.marginRight }}
                 >
                     <div className="sider-logo">
                         <img

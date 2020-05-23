@@ -10,23 +10,23 @@ export interface RouteType {
     icon?: string;
     children?: RouteType[];
 }
-//<Route component={NoMatch}></Route> lazy(() => import("layout/index/index"))    onKeyUp={(e: SyntheticEvent<Element, Event>) => { }}
 export const AppRoutes: RouteType[] = [
-    {
-        pathname: "/admin",
-        exact: false,
-        component: Layout,
-    },
+
     {
         pathname: "/login",
         component: lazy(() => import("pages/login/index")),
         exact: true,
-    }
+    },
+    {
+        pathname: "/",
+        exact: false,
+        component: Layout,
+    },
 ];
 //
 export const ContentRoutes: RouteType[] = [
     {
-        pathname: "/admin/welcome",
+        pathname: "/",
         exact: true,
         component: lazy(() => import("pages/welcome/Welcome")),
     },
@@ -59,7 +59,7 @@ export const renderRouter = (router: any) => {
                 />
             );
         })}
-        <Redirect exact path="/" to={{ pathname: '/admin/welcome' }}></Redirect>
+        <Redirect exact path="/admin" to={{ pathname: '/admin/dashboard/log' }}></Redirect>
         <Route component={NoMatch}></Route>
     </Switch>
 };

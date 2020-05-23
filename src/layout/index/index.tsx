@@ -12,8 +12,6 @@ interface LayoutProps {
     themeStore?: ThemeInterface; //  这里比较关键 ？表示可或缺，如果没有就会报错。
 }
 interface LayoutState {
-    collapsed: boolean;
-    isMd: boolean;
     visible: boolean;
     marginLeft?: number //  这里比较关键 ？表示可或缺，如果没有就会报错。
 }
@@ -30,15 +28,14 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
     constructor(props: any) {
         super(props);
         this.state = {
-            collapsed: false,
-            isMd: false,
             visible: false
         };
     }
     showDrawer = (): void => {
+        const { setCollapsed } = this.props.themeStore!
+        setCollapsed(true)
         this.setState({
-            visible: true,
-            collapsed: true
+            visible: true
         });
     };
 
@@ -49,38 +46,32 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
     };
 
     toggleCollapsed = (collapsed: boolean): void => {
-        const { setLayoutLeft, affixMenu, affixHeader } = this.props.themeStore!
-        const { isMd } = this.state
+        const { setLayoutLeft, setCollapsed, affixMenu, isMd, affixHeader } = this.props.themeStore!
+
         if (collapsed && affixMenu) {
             console.log(collapsed, 1);
-            setLayoutLeft(80)
+            setLayoutLeft(82)
         }
 
         if (!collapsed && affixMenu) {
             console.log(collapsed, 2);
-            setLayoutLeft(256)
+            setLayoutLeft(258)
         }
         if (collapsed && affixHeader && !isMd) {
             console.log(collapsed, 3);
 
-            setLayoutLeft(80)
+            setLayoutLeft(82)
         }
         if (!collapsed && affixHeader && !isMd) {
-            console.log(collapsed, 3);
-            setLayoutLeft(256)
+            console.log(collapsed, 4);
+            setLayoutLeft(258)
         }
-        this.setState({
-            collapsed: collapsed,
-        });
-    };
-    toggleMd = (isMd: boolean): void => {
-        this.setState({
-            isMd: isMd,
-        });
+        setCollapsed(collapsed)
+
     };
     render() {
-        const { collapsed, isMd, visible } = this.state
-        const { getLayoutLeft } = this.props.themeStore!
+        const { visible } = this.state
+        const { collapsed, getLayoutLeft, isMd } = this.props.themeStore!
         return (
             <Layout className="wrapper">
                 <Setting></Setting>
@@ -89,8 +80,10 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
                     onClose={this.onClose}
                     collapsed={collapsed}
                     toggleCollapsed={this.toggleCollapsed}
-                    toggleMd={this.toggleMd}>
+                >
+
                 </SiderWrap>
+
                 <Layout className="site-layout" style={{ ...getLayoutLeft }}>
                     <HeaderWrap
                         collapsed={collapsed}
