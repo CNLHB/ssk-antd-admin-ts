@@ -1,5 +1,5 @@
 import React from "react";
-import { Badge, Avatar, Dropdown} from "antd";
+import { Badge, Avatar, Dropdown } from "antd";
 import DraopdownItem from '../dropdown-item/index'
 import './index.less'
 import {
@@ -8,7 +8,9 @@ import {
     QuestionCircleOutlined
 } from "@ant-design/icons";
 
-
+interface HeaderProps {
+    userInfo: any
+}
 const content = (
     <div>
         <p>Content</p>
@@ -18,8 +20,10 @@ const content = (
 
 
 
-export default class DropdownItem extends React.Component<{}, {}> {
+export default class DropdownItem extends React.Component<{ userInfo: any }, {}> {
     render() {
+        const { userInfo } = this.props
+        console.log(userInfo)
         return (
             <div className="headerRight">
                 <div className="header-hover" ><QuestionCircleOutlined /></div>
@@ -34,7 +38,7 @@ export default class DropdownItem extends React.Component<{}, {}> {
                     placement="bottomRight">
                     <div>
                         <Avatar size={24} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                        <span className="text-center">Seven</span>
+                        <span className="text-center">{userInfo.userName}</span>
                     </div>
                 </Dropdown>
                 <Dropdown className="header-hover" overlay={<></>} placement="bottomRight">

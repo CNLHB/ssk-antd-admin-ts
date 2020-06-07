@@ -30,7 +30,7 @@ export default class NavMenu extends Component<MenuProps, { menuTreeNode: any }>
             }
             return (
                 <Menu.Item title={item.title} key={item.key}>
-                    <Link to={'/admin'+item.key}>
+                    <Link to={'/admin' + item.key}>
                         {item.icon}
                         {item.title}
                     </Link>
@@ -41,9 +41,8 @@ export default class NavMenu extends Component<MenuProps, { menuTreeNode: any }>
     render() {
         const { theme, setBreadTitle } = this.props;
         function handleClick(e: any) {
-            const key = e.key
-            setBreadTitle(matchTitle[key])
-            console.log("click", matchTitle[key]);
+            setBreadTitle(matchTitle[e.key])
+            console.log("click", matchTitle[e.key]);
         }
         return (
             <div>

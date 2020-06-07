@@ -21,7 +21,7 @@ class Log extends Component<LogProps, {}> {
                     style={{ padding: 24, margin: 24, minHeight: 460 }}
                 >
 
-                    <Button onClick={() => { throw Error("手动抛出异常") }}>Click</Button> LOG
+                    <Button onClick={() => { fetch('http://localhost:3100/admin/dashboard/sssssssss') }}>Click</Button> LOG
 
                 </div>
             </div>

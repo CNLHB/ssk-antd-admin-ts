@@ -7,9 +7,12 @@ import FooterWrap from "layout/footer/index";
 import HeaderWrap from "layout/header/index";
 import { inject, observer } from 'mobx-react'
 import { ThemeInterface } from "models/theme/index";
+import { AdminInterface } from "models/user/user";
+
 import "./index.less";
 interface LayoutProps {
-    themeStore?: ThemeInterface; //  这里比较关键 ？表示可或缺，如果没有就会报错。
+    themeStore?: ThemeInterface;
+    adminStore?: AdminInterface //  这里比较关键 ？表示可或缺，如果没有就会报错。
 }
 interface LayoutState {
     visible: boolean;
@@ -22,7 +25,7 @@ interface LayoutState {
  * @param {type} 
  * @return: 
  */
-@inject("themeStore")
+@inject("themeStore", "adminStore")
 @observer
 export default class LayoutApp extends React.Component<LayoutProps, LayoutState> {
     constructor(props: any) {
@@ -30,6 +33,11 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
         this.state = {
             visible: false
         };
+
+    }
+    componentDidMount() {
+        let { auth } = this.props.adminStore!
+        auth()
     }
     showDrawer = (): void => {
         const { setCollapsed } = this.props.themeStore!
