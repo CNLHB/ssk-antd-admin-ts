@@ -1,8 +1,6 @@
 import React from 'react';
 import { Card, Typography, Alert } from 'antd';
-import { Button } from 'antd';
 import styles from './Welcome.module.less';
-import { get } from 'config/api/axios'
 
 const CodePreview: React.FC<{}> = ({ children }) => (
     <pre className={styles.pre}>
@@ -78,7 +76,6 @@ const Welcome: React.FC<{}> = (props: any) => (
       </a>
       。
     </p>
-        <Button type="primary" onClick={() => { get('auth/verify') }}>Back Home</Button>
 
     </div>
 );

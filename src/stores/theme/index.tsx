@@ -1,6 +1,6 @@
 import { action, computed, observable } from 'mobx'
 import { CSSProperties } from 'react'
-import { ThemeInterface, ThemeColorType } from 'models/theme/index'
+import { ThemeInterface, ThemeColorType } from 'stores/models/theme/index'
 class ThemeStore implements ThemeInterface {
     @observable public theme: ThemeColorType = "light";
     @observable public affixHeader: boolean = false;

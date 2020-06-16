@@ -5,8 +5,8 @@ import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
 } from "@ant-design/icons";
-import { ThemeInterface } from "models/theme/index";
-import { AdminInterface } from "models/user/user";
+import { ThemeInterface } from "stores/models/theme/index";
+import { AdminInterface } from "stores/models/user/user";
 import DropdownList from 'components/header/dropdown-list'
 import './index.less'
 const { Header } = Layout;
@@ -25,7 +25,7 @@ export default class HeaderWrap extends React.Component<LayoutProps, {}> {
     render() {
         const { collapsed, isMd, toggleCollapsed, showDrawer } = this.props
         const { getFixedHeader } = this.props.themeStore!
-        const { admin } = this.props.adminStore!
+        const { admin, logout } = this.props.adminStore!
 
         return (
             <Header className="site-layout-background headerflex" style={{ padding: 0, ...getFixedHeader }}>
@@ -43,7 +43,7 @@ export default class HeaderWrap extends React.Component<LayoutProps, {}> {
                         },
                     }
                 )}
-                <DropdownList userInfo={admin}></DropdownList>
+                <DropdownList userInfo={admin} logout={() => { logout() }}></DropdownList>
 
             </Header>
 

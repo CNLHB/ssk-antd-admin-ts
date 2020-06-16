@@ -1,6 +1,6 @@
 // 创建store
 import { action, computed, observable } from "mobx";
-import { LoginInterface } from "models/login/index";
+import { LoginInterface } from "../models/login/index";
 
 class LoginStore implements LoginInterface {
     @observable public phone: string = "";

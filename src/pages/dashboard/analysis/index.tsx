@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
-import { BreadInterface } from 'models/breadcrumb/index'
+import { BreadInterface } from 'stores/models/breadcrumb/index'
 interface AnalyProps {
     breadStore: BreadInterface
 }

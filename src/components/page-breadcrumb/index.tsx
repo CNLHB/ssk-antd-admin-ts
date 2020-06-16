@@ -25,5 +25,4 @@ class PageBread extends Component<{ bread: string[] }, {}> {
         );
     }
 }
-//log
 export default PageBread;

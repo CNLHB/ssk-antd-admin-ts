@@ -52,17 +52,22 @@ const menuList: MenuType[] = [
     },
     {
         title: "动态管理",
-        key: "/form",
+        key: "/dynamic",
         icon: <SettingFilled />,
         children: [
             {
-                title: "动态分类",
-                key: "/form/login",
+                title: "动态趋势图",
+                key: "/dynamic/chart",
                 icon: <SettingFilled />,
             },
             {
-                title: "注册",
-                key: "/form/reg",
+                title: "动态分类",
+                key: "/dynamic/category",
+                icon: <SettingFilled />,
+            },
+            {
+                title: "动态详情",
+                key: "/dynamic/detail",
                 icon: <SettingFilled />,
             },
         ],
@@ -88,16 +93,16 @@ const menuList: MenuType[] = [
     },
     {
         title: "用户管理",
-        key: "/table",
+        key: "/user",
         icon: <SettingFilled />,
         children: [
             {
-                title: "基础表格",
-                key: "/table/basic",
+                title: "用户趋势",
+                key: "/user/trend",
             },
             {
-                title: "高级表格",
-                key: "/table/high",
+                title: "用户列表",
+                key: "/user/list",
             },
         ],
     },

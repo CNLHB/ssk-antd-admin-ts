@@ -2,7 +2,7 @@ import React from "react";
 import { Drawer } from "antd";
 import NavMenu from 'components/menu/index'
 import MenuLogo from 'components/menu-logo/index'
-import { ThemeColorType } from 'models/theme/index'
+import { ThemeColorType } from 'stores/models/theme/index'
 interface DrawerProps {
     visible: boolean;
     theme: ThemeColorType

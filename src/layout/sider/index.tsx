@@ -5,8 +5,8 @@ import navLogo from "assets/images/logo-ant.svg";
 import DrawerSider from "layout/drawer-sider/index";
 import "./index.less";
 import { inject, observer } from 'mobx-react'
-import { ThemeInterface } from "models/theme/index";
-import { BreadInterface } from 'models/breadcrumb/index'
+import { ThemeInterface } from "stores/models/theme/index";
+import { BreadInterface } from 'stores/models/breadcrumb/index'
 const { Sider } = Layout;
 
 

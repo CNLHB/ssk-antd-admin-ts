@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Drawer, Space, Switch, Row, Col, Divider } from "antd";
 import { SettingFilled } from "@ant-design/icons";
 import { inject, observer } from 'mobx-react'
-import { ThemeInterface, ThemeColorType } from "models/theme/index";
+import { ThemeInterface, ThemeColorType } from "stores/models/theme/index";
 import styles from "./index.module.less";
 import svgLine from "assets/images/setting-line.svg";
 import svgDark from "assets/images/setting-dark.svg";

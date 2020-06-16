@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react'
 import { Button, Checkbox, Row, Input, Form, message } from 'antd'
 import styles from './index.module.less'
 import FooterWrap from "layout/footer/index";
-import { AdminInterface } from "models/user/user";
+import { AdminInterface } from "stores/models/user/user";
 import { FormInstance } from 'antd/lib/form';
 const FormItem = Form.Item
 interface AdminProps extends RouteComponentProps {
@@ -31,6 +31,11 @@ class Login extends React.Component<AdminProps> {
         const onFinish = async (values: object) => {
             const { login } = this.props.adminStore!;
             let result = await login(values)
+            console.log(result);
+            if (result === 500) {
+                message.error("服务器出故障了~~~")
+                return
+            }
             if (!result) {
                 message.error("账号或密码错误")
                 return

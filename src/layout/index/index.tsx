@@ -6,8 +6,8 @@ import SiderWrap from "layout/sider/index";
 import FooterWrap from "layout/footer/index";
 import HeaderWrap from "layout/header/index";
 import { inject, observer } from 'mobx-react'
-import { ThemeInterface } from "models/theme/index";
-import { AdminInterface } from "models/user/user";
+import { ThemeInterface } from "stores/models/theme/index";
+import { AdminInterface } from "stores/models/user/user";
 
 import "./index.less";
 interface LayoutProps {
@@ -35,9 +35,13 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
         };
 
     }
-    componentDidMount() {
+    async componentDidMount() {
         let { auth } = this.props.adminStore!
-        auth()
+        let status = await auth()
+        if (!status) {
+            console.log(status)
+            // window.location.href = "login"
+        }
     }
     showDrawer = (): void => {
         const { setCollapsed } = this.props.themeStore!

@@ -44,7 +44,42 @@ export const ContentRoutes: RouteType[] = [
         pathname: "/admin/dashboard/monitor",
         exact: true,
         component: lazy(() => import("pages/dashboard/monitor/index")),
-    }
+    },
+    {
+        pathname: "/admin/account/center",
+        exact: true,
+        component: lazy(() => import("pages/account/center/center"))
+    },
+    {
+        pathname: "/admin/account/settings",
+        exact: true,
+        component: lazy(() => import("pages/account/setting/index"))
+    },
+    {
+        pathname: "/admin/dynamic/category",
+        exact: true,
+        component: lazy(() => import("pages/dynamic/category/index"))
+    },
+    {
+        pathname: "/admin/dynamic/detail",
+        exact: true,
+        component: lazy(() => import("pages/dynamic/detail/index"))
+    },
+    {
+        pathname: "/admin/dynamic/chart",
+        exact: true,
+        component: lazy(() => import("pages/dynamic/chart/index"))
+    },
+    {
+        pathname: "/admin/user/list",
+        exact: true,
+        component: lazy(() => import("pages/user/list/index"))
+    },
+    {
+        pathname: "/admin/user/trend",
+        exact: true,
+        component: lazy(() => import("pages/user/trend/index"))
+    },
 ];
 
 export const renderRouter = (router: any) => {

@@ -9,8 +9,10 @@ import {
 } from "@ant-design/icons";
 
 interface HeaderProps {
-    userInfo: any
+    userInfo: any,
+    logout(): void
 }
+
 const content = (
     <div>
         <p>Content</p>
@@ -20,10 +22,9 @@ const content = (
 
 
 
-export default class DropdownItem extends React.Component<{ userInfo: any }, {}> {
+export default class DropdownItem extends React.Component<{ userInfo: any, logout(): void }, {}> {
     render() {
         const { userInfo } = this.props
-        console.log(userInfo)
         return (
             <div className="headerRight">
                 <div className="header-hover" ><QuestionCircleOutlined /></div>
@@ -33,11 +34,11 @@ export default class DropdownItem extends React.Component<{ userInfo: any }, {}>
                     </Badge>
                 </Dropdown>
                 <Dropdown className="header-hover"
-                    overlay={<DraopdownItem />}
+                    overlay={<DraopdownItem logout={this.props.logout} />}
                     overlayStyle={{ minWidth: 160 }}
                     placement="bottomRight">
                     <div>
-                        <Avatar size={24} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                        <Avatar size={24} src={userInfo.authorUrl} />
                         <span className="text-center">{userInfo.userName}</span>
                     </div>
                 </Dropdown>

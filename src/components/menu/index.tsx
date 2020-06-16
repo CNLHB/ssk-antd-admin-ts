@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import menuConfig from "config/menu/munuConfig";
 import { Menu } from "antd";
 import { matchTitle } from 'config/menu/matchTitle'
-import { ThemeColorType } from 'models/theme/index'
+import { ThemeColorType } from 'stores/models/theme/index'
 const { SubMenu } = Menu;
 interface MenuProps {
     theme?: ThemeColorType;
