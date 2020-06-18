@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Input, Row, Col, Tag } from 'antd';
+import { Table, Space, Modal, Input, Row, Col, Tag, Avatar } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { AudioOutlined } from '@ant-design/icons';
 import { get, putParm } from 'config/api/axios'
-import { Menu, Dropdown, Button, message, Tooltip } from 'antd';
+import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
@@ -15,14 +14,14 @@ interface UserListProps {
     breadStore: BreadInterface
 }
 const { Search } = Input;
-const suffix = (
-    <AudioOutlined
-        style={{
-            fontSize: 16,
-            color: '#1890ff',
-        }}
-    />
-);
+// const suffix = (
+//     <AudioOutlined
+//         style={{
+//             fontSize: 16,
+//             color: '#1890ff',
+//         }}
+//     />
+// );
 
 
 
@@ -35,7 +34,7 @@ const getRandomuserParams = (params: any) => {
 };
 @inject("breadStore")
 @observer
-class UserList extends React.Component<UserListProps> {
+class UserList extends Component<UserListProps> {
     state = {
         data: [],
         selectedRowKeys: [],
@@ -67,31 +66,45 @@ class UserList extends React.Component<UserListProps> {
     };
     fetch = async (params: any, value?: string | null) => {
         this.setState({ loading: true });
-        value = value == undefined ? "" : value
+        value = value === undefined ? "" : value
         console.log(getRandomuserParams(params))
         let data = getRandomuserParams(params)
         let result = await get(`user/v2/list?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}`)
-        let items = result.items.map((item: any) => {
-            return {
-                key: item.id,
-                id: item.id,
-                name: item.userName,
-                phone: item.phoneNumber,
-                email: item.email,
-                gender: item.gender === 0 ? "男" : "女",
-                status: item.status,
-                action: [{ id: item.id, text: item.status === false ? "冻结" : "解冻" }, { id: item.id, text: "详情" }]
-            }
-        })
         console.log(result)
-        this.setState({
-            loading: false,
-            data: items,
-            pagination: {
-                ...params.pagination,
-                total: result.total,
-            },
-        });
+        if (result.items !== null) {
+            let items = result.items.map((item: any) => {
+                return {
+                    key: item.id,
+                    id: item.id,
+                    name: item.userName,
+                    phone: item.phoneNumber,
+                    email: item.email,
+                    url: item.authorUrl,
+                    gender: item.gender === 0 ? "男" : "女",
+                    status: item.status,
+                    action: [{ id: item.id, text: item.status === false ? "冻结" : "解冻" }, { id: item.id, text: "详情" }]
+                }
+            })
+            this.setState({
+                loading: false,
+                data: items,
+                pagination: {
+                    ...params.pagination,
+                    total: result.total,
+                },
+            });
+        } else {
+            this.setState({
+                loading: false,
+                data: [],
+                pagination: {
+                    ...params.pagination,
+                    total: 0,
+                },
+            });
+        }
+
+
     };
 
     render() {
@@ -116,9 +129,16 @@ class UserList extends React.Component<UserListProps> {
             {
                 title: '昵称',
                 dataIndex: 'name',
-                sorter: true,
                 render: (name: any) => `${name}`,
-                width: '15%',
+                width: 120,
+                ellipsis: true,
+            },
+            {
+                title: '头像',
+                dataIndex: 'url',
+                render: (url: any) => <Avatar src={url}></Avatar>,
+                width: 80,
+                ellipsis: true,
             },
             {
                 title: '手机',
@@ -139,10 +159,13 @@ class UserList extends React.Component<UserListProps> {
                 title: '邮箱',
                 dataIndex: 'email',
                 width: 120,
+                ellipsis: true,
             },
             {
                 title: '状态',
                 dataIndex: 'status',
+                width: 120,
+                ellipsis: true,
                 render: (status: any) => (
                     <>
                         {
@@ -161,6 +184,8 @@ class UserList extends React.Component<UserListProps> {
                 title: '操作',
                 dataIndex: "action",
                 key: "action",
+                width: 180,
+                ellipsis: true,
                 render: (action: any) => (
                     <>
                         <Space>

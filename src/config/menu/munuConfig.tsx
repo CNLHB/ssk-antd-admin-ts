@@ -74,21 +74,17 @@ const menuList: MenuType[] = [
     },
     {
         title: "话题管理",
-        key: "/charts",
+        key: "/topic",
         icon: <SettingFilled />,
         children: [
             {
-                title: "柱形图",
-                key: "/charts/bar",
+                title: "话题趋势",
+                key: "/topic/chart",
             },
             {
-                title: "饼图",
-                key: "/charts/pie",
-            },
-            {
-                title: "折线图",
-                key: "/charts/line",
-            },
+                title: "话题列表",
+                key: "/topic/list",
+            }
         ],
     },
     {
@@ -106,70 +102,52 @@ const menuList: MenuType[] = [
             },
         ],
     },
-
-    {
-        title: "城市管理",
-        icon: <SettingFilled />,
-        key: "/city",
-        children: [
-            {
-                title: "订单详情",
-                key: "/city/detail",
-                icon: <DashboardOutlined />,
-            },
-            {
-                title: "结束订单",
-                key: "/city/finish",
-                icon: <DashboardOutlined />,
-            },
-        ],
-    },
-    {
-        title: "交易管理",
-        key: "/order",
-        icon: <SettingFilled />,
-        children: [
-            {
-                title: "订单详情",
-                key: "/order/detail",
-                icon: <DashboardOutlined />,
-            },
-            {
-                title: "结束订单",
-                key: "/order/finish",
-                icon: <DashboardOutlined />,
-            },
-        ],
-    },
-    {
-        title: "二手市场管理",
-        key: "/two",
-        icon: <SettingFilled />,
-        children: [
-            {
-                title: "订单详情",
-                key: "/two/detail",
-                icon: <DashboardOutlined />,
-            },
-            {
-                title: "结束订单",
-                key: "/two/finish",
-                icon: <DashboardOutlined />,
-            },
-        ],
-    },
+    // {
+    //     title: "交易管理",
+    //     key: "/order",
+    //     icon: <SettingFilled />,
+    //     children: [
+    //         {
+    //             title: "订单详情",
+    //             key: "/order/detail",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //         {
+    //             title: "结束订单",
+    //             key: "/order/finish",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //     ],
+    // },
+    // {
+    //     title: "二手市场管理",
+    //     key: "/two",
+    //     icon: <SettingFilled />,
+    //     children: [
+    //         {
+    //             title: "订单详情",
+    //             key: "/two/detail",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //         {
+    //             title: "结束订单",
+    //             key: "/two/finish",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //     ],
+    // },
     {
         title: "广告管理",
         key: "/bikeMap",
         icon: <SettingFilled />,
         children: [
             {
-                title: "订单详情",
+                title: "新增广告",
                 key: "/bikeMapdetail",
                 icon: <DashboardOutlined />,
             },
             {
-                title: "结束订单",
+                title: "广告列表",
                 key: "/bikeMapfinish",
                 icon: <DashboardOutlined />,
             },
@@ -182,12 +160,12 @@ const menuList: MenuType[] = [
         icon: <SettingFilled />,
         children: [
             {
-                title: "订单详情",
+                title: "新增权限",
                 key: "/permission/detail",
                 icon: <DashboardOutlined />,
             },
             {
-                title: "结束订单",
+                title: "权限管理",
                 key: "/permission/finish",
                 icon: <DashboardOutlined />,
             },

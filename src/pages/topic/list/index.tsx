@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Input, Row, Col, Tag, Divider } from 'antd';
+import { Table, Space, Modal, Input, Row, Col, Tag, Divider, Avatar } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
@@ -26,7 +26,7 @@ const getRandomuserParams = (params: any) => {
 };
 @inject("breadStore")
 @observer
-class DynamicList extends Component<UserListProps> {
+class TopicList extends Component<UserListProps> {
     state = {
         data: [],
         selectedRowKeys: [],
@@ -81,21 +81,20 @@ class DynamicList extends Component<UserListProps> {
         this.setState({ loading: true });
         value = value === undefined ? "" : value
         let cid1 = (cid === -1 || cid === -2) ? "" : cid
-        console.log(getRandomuserParams(params))
         let data = getRandomuserParams(params)
-        let result = await get(`topic/v2/page?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}&cid=${cid1}`)
+        let result = await get(`topic/title/v2?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}&cid=${cid1}`)
         console.log(result)
-        if (typeof result === "object") {
+        if (result.items !== null) {
             let items = result.items.map((item: any) => {
                 return {
                     key: item.id,
                     id: item.id,
-                    cName: item.cName,
-                    // title: item.title,
-                    email: item.email,
-                    like: item.infoNum.likeNum,
-                    content: item.title,
-                    uName: item.username,
+                    uName: item.uName,
+                    title: item.title,
+                    total: item.total,
+                    url: item.titlePic,
+                    desc: item.description,
+                    cName: item.cName === null ? "" : item.cName,
                     createTime: time.gettime(item.createTime),
                     status: item.display === true ? false : true,
                     action: [{ id: item.id, text: item.display === true ? "冻结" : "解冻" }, { id: item.id, text: "详情" }]
@@ -138,10 +137,22 @@ class DynamicList extends Component<UserListProps> {
                 width: 50,
             },
             {
+                title: '标题',
+                dataIndex: 'title',
+                render: (name: any) => `${name}`,
+                ellipsis: true,
+            },
+            {
+                title: '图片',
+                dataIndex: 'url',
+                render: (url: any) => <Avatar src={url}></Avatar>,
+                width: 80,
+                ellipsis: true,
+            },
+            {
                 title: '分类名',
                 dataIndex: 'cName',
-                sorter: true,
-                render: (name: any) => `${name}`,
+                render: (phone: any) => `${phone}`,
                 width: 120,
                 ellipsis: true,
             },
@@ -153,20 +164,16 @@ class DynamicList extends Component<UserListProps> {
                 ellipsis: true,
             },
             {
-                title: '内容',
-                dataIndex: 'content',
+                title: '描述',
+                dataIndex: 'desc',
                 ellipsis: true,
             },
+
             {
-                title: '获赞',
-                dataIndex: 'like',
-                width: 80,
+                title: '动态数量',
+                dataIndex: 'total',
                 ellipsis: true,
             },
-            // {
-            //     title: '标题',
-            //     dataIndex: 'title',
-            // },
             {
                 title: '发布时间',
                 dataIndex: 'createTime',
@@ -176,8 +183,8 @@ class DynamicList extends Component<UserListProps> {
             {
                 title: '状态',
                 dataIndex: 'status',
-                width: 120,
                 ellipsis: true,
+                width: 120,
                 render: (status: any) => (
                     <>
                         {
@@ -238,14 +245,7 @@ class DynamicList extends Component<UserListProps> {
                 okText: '确定',
                 cancelText: '返回',
                 onOk: () => {
-                    if (index) {
-                        putParm('topic/active/list', obj).then(() => {
-                            const { pagination, selectedCategory, value } = this.state;
-                            this.fetch({ pagination }, value, selectedCategory);
-                        })
-                        return
-                    }
-                    putParm('topic/freeze', obj).then(() => {
+                    putParm('topic/title/freeze', obj).then(() => {
                         const { pagination, selectedCategory, value } = this.state;
                         this.fetch({ pagination }, value, selectedCategory);
                     })
@@ -272,13 +272,6 @@ class DynamicList extends Component<UserListProps> {
                     })
                 }}>
                     批量解冻
-            </Menu.Item>
-                <Menu.Item key="3" onClick={() => {
-                    showConfirm({
-                        ids: selectedRowKeys
-                    }, 3)
-                }}>
-                    一键点赞
             </Menu.Item>
             </Menu>
         );
@@ -429,4 +422,4 @@ class DynamicList extends Component<UserListProps> {
         );
     }
 }
-export default DynamicList;
+export default TopicList;

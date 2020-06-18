@@ -11,7 +11,10 @@ const { Title, Text } = Typography;
 const { Meta } = Card;
 const { TabPane } = Tabs;
 
-class UserTrend extends Component<{}, {}> {
+
+
+
+class TopicTrend extends Component<{}, {}> {
     state = {
         loading: true,
         selectedBtn: 2,
@@ -28,7 +31,8 @@ class UserTrend extends Component<{}, {}> {
             day: 0,
             monthList: [],
             weekList: [],
-            yearList: []
+            yearList: [],
+            categoryTotal: []
         },
         btnList: [
             //     {
@@ -52,17 +56,18 @@ class UserTrend extends Component<{}, {}> {
         this.fetch()
     }
     fetch = async () => {
-        let result = await get('user/trend')
+        let result = await get('topic/title/trend')
         let monthList = result.data.monthList.map((item: any) => {
             return { text: item.current_day, value: item.total }
         })
         let weekList = result.data.weekList.map((item: any, index: number) => {
             return { text: item.current_day, value: item.total }
         })
-        let len = result.data.yearList.length
+        let len = result.data.yearList.length > 12 ? result.data.yearList.length : 12
         let yearList = result.data.yearList.splice(len - 12, 12).map((item: any) => {
             return { text: item.months, value: item.total }
         })
+        console.log(result)
         this.setState({
             showData: weekList,
             loading: false,
@@ -70,17 +75,15 @@ class UserTrend extends Component<{}, {}> {
                 yesterday: result.data.yesterday,
                 total: result.data.total,
                 week: result.data.week,
-                woman: result.data.woman,
                 upWeek: result.data.upWeek,
                 year: result.data.year,
-                man: result.data.man,
                 day: result.data.day,
                 monthList: monthList,
                 weekList: weekList,
-                yearList: yearList
+                yearList: yearList,
+                categoryTotal: result.data.categoryTotal
             }
         })
-        console.log(result);
 
     }
     onChange = (checked: boolean) => {
@@ -92,20 +95,9 @@ class UserTrend extends Component<{}, {}> {
             console.log(key);
         }
         const { loading, data, btnList, selectedBtn, showData, showText } = this.state;
-        const { week, upWeek, total, day, yesterday, woman, man, monthList, weekList, yearList } = data;
-        const data1 = [
-            {
-                type: '男',
-                value: man,
-            },
-            {
-                type: '女',
-                value: woman,
-            },
-
-        ];
-        let weeked = Math.round((week / upWeek) * 100);
-        let dayed = Math.round((day / yesterday) * 100);
+        const { week, upWeek, total, day, yesterday, categoryTotal, woman, man, monthList, weekList, yearList } = data;
+        let weeked = upWeek === 0 ? 0 : Math.round((week / upWeek) * 100);
+        let dayed = yesterday === 0 ? 0 : Math.round((day / yesterday) * 100);
         const operations = <Row gutter={[12, 0]}>{btnList.map((item: any) => {
             return <Col key={item.key}>
                 <Button
@@ -151,10 +143,10 @@ class UserTrend extends Component<{}, {}> {
                         <Card style={{ width: "100%" }}
                             loading={loading}>
                             <Row>
-                                <Col span={11}>
+                                <Col span={10}>
                                     <Space direction="vertical" size="small">
                                         <Meta
-                                            description="总用户"
+                                            description="总话题"
                                         />
                                         <Title>{total}</Title>
                                         <Text strong>
@@ -178,21 +170,21 @@ class UserTrend extends Component<{}, {}> {
                                         </Text>
                                     </Space>
                                 </Col>
-                                <Col span={13}>
+                                <Col span={14}>
                                     <PieChart
-                                        data={data1}
+                                        data={categoryTotal}
                                         radius={1}
-                                        angleField='value'
-                                        colorField='type'
+                                        angleField='total'
+                                        colorField='name'
                                         forceFit
-                                        title={{
-                                            visible: true,
-                                            text: '男女比例',
-                                        }}
                                         legend={{
                                             position: "bottom-center",
                                             offsetY: 12
 
+                                        }}
+                                        title={{
+                                            visible: true,
+                                            text: '话题分布',
                                         }}
                                         label={{
                                             visible: true,
@@ -312,4 +304,4 @@ class UserTrend extends Component<{}, {}> {
         );
     }
 }
-export default UserTrend;
+export default TopicTrend;

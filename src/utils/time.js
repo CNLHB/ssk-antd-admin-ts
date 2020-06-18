@@ -2,7 +2,7 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-09 17:08:02
- * @LastEditTime: 2020-06-09 17:08:26
+ * @LastEditTime: 2020-06-18 14:18:59
  * @LastEditors: seven
  */
 const gettime = {
@@ -28,7 +28,7 @@ const gettime = {
         let minutes = Math.floor(leave2 / (60 * 1000))//计算相差分钟数
         //计算相差秒数
         let leave3 = leave2 % (60 * 1000)      //计算分钟数后剩余的毫秒数
-        let seconds = Math.round(leave3 / 1000)
+        // let seconds = Math.round(leave3 / 1000)
         return dayDiff + "天 " + hours + "小时 ";
     },
     // 获取聊天时间（相差300s内的信息不会显示时间）
