@@ -1,30 +1,27 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Input, Row, Col, Tag, Avatar } from 'antd';
+import { Table, Space, Modal, Form, Input, Radio, Row, Col, Tag, Avatar } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { get, putParm } from 'config/api/axios'
+import { get, post, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-
+import { FormInstance } from 'antd/lib/form';
+import { getRandomName, getMoble } from 'utils/createInfo'
 const { confirm } = Modal;
 interface UserListProps {
     breadStore: BreadInterface
 }
 const { Search } = Input;
-// const suffix = (
-//     <AudioOutlined
-//         style={{
-//             fontSize: 16,
-//             color: '#1890ff',
-//         }}
-//     />
-// );
-
-
-
+const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 16 },
+};
+const tailLayout = {
+    wrapperCol: { offset: 6, span: 16 },
+};
 const getRandomuserParams = (params: any) => {
     return {
         results: params.pagination.pageSize,
@@ -35,6 +32,7 @@ const getRandomuserParams = (params: any) => {
 @inject("breadStore")
 @observer
 class UserList extends Component<UserListProps> {
+    formRef = React.createRef<FormInstance>();
     state = {
         data: [],
         selectedRowKeys: [],
@@ -42,15 +40,46 @@ class UserList extends Component<UserListProps> {
             current: 1,
             pageSize: 10,
         },
+        visible: false,
         loading: false,
     };
 
     componentDidMount() {
         const { pagination } = this.state;
         this.fetch({ pagination });
+        this.formRef.current?.setFieldsValue({
+            userName: getRandomName(5),
+            phoneNumber: getMoble() + '',
+            gender: '0'
+
+        });
     }
     onSelectChange = (selectedRowKeys: any) => {
         this.setState({ selectedRowKeys });
+    };
+    handleOk = (e: any) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+    handleCancel = (e: any) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+    showModal = () => {
+        this.formRef.current?.setFieldsValue({
+            userName: getRandomName(5),
+            phoneNumber: getMoble() + '',
+            gender: '0'
+
+        });
+        this.setState({
+            visible: true,
+        });
+
     };
     handleTableChange = (pagination: any, filters: any, sorter: any) => {
         this.fetch({
@@ -63,6 +92,12 @@ class UserList extends Component<UserListProps> {
     handleSearchChange = (value: any) => {
         const { pagination } = this.state;
         this.fetch({ pagination }, value);
+    };
+    onGenderChange = () => {
+        this.formRef.current?.setFieldsValue({
+            userName: "",
+            phoneNumber: ""
+        });
     };
     fetch = async (params: any, value?: string | null) => {
         this.setState({ loading: true });
@@ -118,13 +153,27 @@ class UserList extends Component<UserListProps> {
             // message.info('Click on menu item.');
             console.log('click', e);
         }
+        const onFinish = async (values: any) => {
+            console.log('Success:', values);
+            let result = post('user/register/v2', values)
+            this.setState({
+                visible: false,
+            });
+            const { pagination } = this.state;
+            this.fetch({ pagination });
+        };
+        const onFinishFailed = (errorInfo: any) => {
+            console.log('Failed:', errorInfo);
+        };
+
         const columns = [
             {
                 title: 'id',
                 dataIndex: 'id',
                 sorter: true,
                 render: (id: any) => `${id}`,
-                width: 50,
+                width: 70,
+                ellipsis: true,
             },
             {
                 title: '昵称',
@@ -283,8 +332,56 @@ class UserList extends Component<UserListProps> {
 
                         <Row style={{ padding: 12 }}>
                             <Space>
+                                <Modal
+                                    title="新建用户(自动生成机器人账号)"
+                                    visible={this.state.visible}
+                                    footer={null}
+                                    onOk={this.handleOk}
+                                    onCancel={this.handleCancel}
+                                >
+                                    <Form
+                                        {...layout}
+                                        name="basic"
+                                        onFinish={onFinish}
+                                        ref={this.formRef}
+                                        onFinishFailed={onFinishFailed}
+                                    >
+                                        <Form.Item
+                                            label="用户昵称"
+                                            name="userName"
+                                            rules={[{ required: true, message: 'Please input your 用户昵称!' }]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label="手机号码"
+                                            name="phoneNumber"
+                                            rules={[{ required: true, message: 'Please input your 手机号码!' }]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item name="gender" label="用户性别">
+                                            <Radio.Group>
+                                                <Radio value="0">男</Radio>
+                                                <Radio value="1">女</Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                        <Form.Item {...tailLayout}>
+                                            <Space>
+                                                <Button htmlType="button" onClick={this.onGenderChange}>
+                                                    重置
+                                        </Button>
+                                                <Button type="primary" htmlType="submit">
+                                                    提交
+                                          </Button>
+                                            </Space>
+                                        </Form.Item>
+                                    </Form>
+                                </Modal>
                                 <Button
                                     type="primary"
+                                    onClick={this.showModal}
                                     icon={<PlusOutlined />}
                                 >
                                     新建

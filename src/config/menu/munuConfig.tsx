@@ -28,24 +28,19 @@ const menuList: MenuType[] = [
                 key: "/dashboard/analysis",
                 icon: <SettingFilled />,
             },
+            // {
+            //     title: "监控页",
+            //     key: "/dashboard/monitor",
+            //     icon: <MonitorOutlined />,
+            // },
             {
-                title: "监控页",
-                key: "/dashboard/monitor",
-                icon: <MonitorOutlined />,
-            },
-            {
-                title: "工作台",
-                key: "/dashboard/workplace",
+                title: "页面性能",
+                key: "/dashboard/performance",
                 icon: <SettingFilled />,
             },
             {
-                title: "通知提醒",
-                key: "/ui/notification",
-                icon: <SettingFilled />,
-            },
-            {
-                title: "全局Message",
-                key: "/ui/messages",
+                title: "错误看板",
+                key: "/dashboard/error",
                 icon: <SettingFilled />,
             }
         ],

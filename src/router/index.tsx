@@ -90,6 +90,16 @@ export const ContentRoutes: RouteType[] = [
         exact: true,
         component: lazy(() => import("pages/topic/chart/index"))
     },
+    {
+        pathname: "/admin/dashboard/performance",
+        exact: true,
+        component: lazy(() => import("pages/dashboard/performance/index"))
+    },
+    {
+        pathname: "/admin/dashboard/error",
+        exact: true,
+        component: lazy(() => import("pages/dashboard/error/index"))
+    },
 ];
 
 export const renderRouter = (router: any) => {

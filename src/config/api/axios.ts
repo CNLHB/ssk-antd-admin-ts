@@ -2,12 +2,12 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-07 12:48:57
- * @LastEditTime: 2020-06-16 20:58:40
+ * @LastEditTime: 2020-06-19 01:06:19
  * @LastEditors: seven
  */
 import axios from "axios";
 import { message } from 'antd'
-export let base = process.env.NODE_ENV === 'development' ? "http://192.168.31.164:8081/api/" : "http://api.hfb.xquery.cn/api/";
+export let base = process.env.NODE_ENV === 'development' ? "http://192.168.31.164:8081/api/" : "http://ssk.xquery.cn/api/";
 // let socketBaseUrl = process.env.NODE_ENV === 'development' ? "ws://192.168.31.164:8081/api/" : "ws://api.hfb.xquery.cn/api/";
 axios.defaults.timeout = 15000;                        //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';        //配置请求头

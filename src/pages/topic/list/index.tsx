@@ -1,21 +1,28 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Input, Row, Col, Tag, Divider, Avatar } from 'antd';
+import { Table, Space, Modal, Form, Input, Row, Col, Tag, Divider, Avatar } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { get, putParm } from 'config/api/axios'
+import { get, post, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import time from 'utils/time'
+import { FormInstance } from 'antd/lib/form';
 const { confirm } = Modal;
 interface UserListProps {
     breadStore: BreadInterface
 }
 const { Search } = Input;
 
-
+const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 16 },
+};
+const tailLayout = {
+    wrapperCol: { offset: 6, span: 16 },
+};
 
 const getRandomuserParams = (params: any) => {
     return {
@@ -27,6 +34,7 @@ const getRandomuserParams = (params: any) => {
 @inject("breadStore")
 @observer
 class TopicList extends Component<UserListProps> {
+    formRef = React.createRef<FormInstance>();
     state = {
         data: [],
         selectedRowKeys: [],
@@ -34,6 +42,7 @@ class TopicList extends Component<UserListProps> {
             current: 1,
             pageSize: 10,
         },
+        visible: false,
         loading: false,
         selectedCategory: -2,
         category: [],
@@ -56,6 +65,24 @@ class TopicList extends Component<UserListProps> {
         this.setState({ selectedRowKeys });
 
     };
+    handleOk = (e: any) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+    handleCancel = (e: any) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+    onGenderChange = () => {
+        this.formRef.current?.setFieldsValue({
+            name: "",
+            cDesc: ""
+        });
+    };
     handleTableChange = (pagination: any, filters: any, sorter: any) => {
         const { selectedCategory, value } = this.state
         this.fetch({
@@ -76,6 +103,11 @@ class TopicList extends Component<UserListProps> {
         }, () => {
             this.fetch({ pagination }, value, selectedCategory);
         })
+    };
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
     };
     fetch = async (params: any, value?: string | null, cid?: number | null) => {
         this.setState({ loading: true });
@@ -128,6 +160,18 @@ class TopicList extends Component<UserListProps> {
             // message.info('Click on menu item.');
             console.log('click', e);
         }
+        const onFinish = async (values: any) => {
+            console.log('Success:', values);
+            let result = post('category', values)
+            this.setState({
+                visible: false,
+            });
+            const { pagination } = this.state;
+            this.fetch({ pagination });
+        };
+        const onFinishFailed = (errorInfo: any) => {
+            console.log('Failed:', errorInfo);
+        };
         const columns = [
             {
                 title: 'id',
@@ -381,11 +425,54 @@ class TopicList extends Component<UserListProps> {
 
                         <Row style={{ padding: 12 }}>
                             <Space>
+                                <Modal
+                                    title="新建分类"
+                                    visible={this.state.visible}
+                                    footer={null}
+                                    onOk={this.handleOk}
+                                    onCancel={this.handleCancel}
+                                >
+                                    <Form
+                                        {...layout}
+                                        name="basic"
+                                        onFinish={onFinish}
+                                        ref={this.formRef}
+                                        onFinishFailed={onFinishFailed}
+                                    >
+                                        <Form.Item
+                                            label="分类名称"
+                                            name="name"
+                                            rules={[{ required: true, message: 'Please input your 分类名称!' }]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            label="分类描述"
+                                            name="cDesc"
+                                            rules={[{ required: false, message: 'Please input your 分类描述!' }]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+
+                                        <Form.Item {...tailLayout}>
+                                            <Space>
+                                                <Button htmlType="button" onClick={this.onGenderChange}>
+                                                    重置
+                                        </Button>
+                                                <Button type="primary" htmlType="submit">
+                                                    提交
+                                          </Button>
+                                            </Space>
+                                        </Form.Item>
+                                    </Form>
+                                </Modal>
                                 <Button
                                     type="primary"
-                                    icon={<PlusOutlined />}
+                                // onClick={this.showModal}
+                                // icon={<PlusOutlined />}
                                 >
-                                    新建
+                                    话题管理
                          </Button>
                                 {selectedRowKeys.length > 0 ? <Dropdown overlay={menu}>
                                     <Button>

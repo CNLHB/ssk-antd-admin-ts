@@ -140,7 +140,6 @@ class DynamicList extends Component<UserListProps> {
             {
                 title: '分类名',
                 dataIndex: 'cName',
-                sorter: true,
                 render: (name: any) => `${name}`,
                 width: 120,
                 ellipsis: true,
@@ -390,9 +389,9 @@ class DynamicList extends Component<UserListProps> {
                             <Space>
                                 <Button
                                     type="primary"
-                                    icon={<PlusOutlined />}
+                                // icon={<PlusOutlined />}
                                 >
-                                    新建
+                                    动态管理
                          </Button>
                                 {selectedRowKeys.length > 0 ? <Dropdown overlay={menu}>
                                     <Button>

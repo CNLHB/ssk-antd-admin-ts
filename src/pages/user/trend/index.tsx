@@ -104,8 +104,9 @@ class UserTrend extends Component<{}, {}> {
             },
 
         ];
-        let weeked = Math.round((week / upWeek) * 100);
-        let dayed = Math.round((day / yesterday) * 100);
+        let weeked = upWeek === 0 ? week * 100 : Math.round((week / upWeek) * 100);
+        let dayed = yesterday === 0 ? day * 100 : Math.round((day / yesterday) * 100);
+
         const operations = <Row gutter={[12, 0]}>{btnList.map((item: any) => {
             return <Col key={item.key}>
                 <Button
