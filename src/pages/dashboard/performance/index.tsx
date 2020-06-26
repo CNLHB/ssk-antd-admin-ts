@@ -45,6 +45,7 @@ interface MonitorState {
 }
 let date = new Date();
 let day = `${date.getFullYear()}-${date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)}-${date.getDate() >= 10 ? date.getDate() : '0' + (date.getDate())}`
+
 @inject("breadStore")
 @observer
 class Performance extends Component<MonitorProps, MonitorState> {
@@ -109,10 +110,6 @@ class Performance extends Component<MonitorProps, MonitorState> {
         }
         ],
         btnList: [
-            //     {
-            //     key: 1,
-            //     text: "今日"
-            // },
             {
                 key: 2,
                 text: "本周"
@@ -121,10 +118,7 @@ class Performance extends Component<MonitorProps, MonitorState> {
                 key: 3,
                 text: "本月"
             },
-            // {
-            //     key: 4,
-            //     text: "全年"
-            // }
+
         ]
     }
     componentDidMount() {
@@ -265,8 +259,6 @@ class Performance extends Component<MonitorProps, MonitorState> {
         const { btnList, urlList, selUrl, waterfall, histogram, selectedBtn } = this.state;
         // 数据源
 
-
-
         function callback(key: any) {
             console.log(key);
         }
@@ -340,7 +332,7 @@ class Performance extends Component<MonitorProps, MonitorState> {
                     style={{ padding: 24, margin: 24, minHeight: 460 }}
                 >
 
-                    <Row style={{ backgroundColor: "#fff"}} >
+                    <Row style={{ backgroundColor: "#fff" }} >
                         <Col span={24}>
                             <Row gutter={[16, 16]}>
                                 <Col md={24} lg={8} xl={8}>

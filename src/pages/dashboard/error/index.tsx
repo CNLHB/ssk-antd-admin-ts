@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { Button, Card, Tabs, Typography, Row, Table, Tag, Col, Space } from 'antd';
+import { Button, Card, Tabs, Typography, Row, Table, Tag, Col, Space, DatePicker } from 'antd';
 import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
+import time from 'utils/time'
 import { get } from 'config/api/axios'
 import {
     Chart,
@@ -29,15 +30,32 @@ interface MonitorProps {
 interface MonitorState {
     btnList: Array<any>
     urlList: Array<any>
+    diagram: Array<any>
+    errorUrlList: Array<any>
+    histogram: Array<any>
     selectedBtn: string
+    selUrl: string
+    selDay: number
+    day: string
+    type: string
 }
+let date = new Date();
+let day = `${date.getFullYear()}-${date.getMonth() + 1 >= 10 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)}-${date.getDate() >= 10 ? date.getDate() : '0' + (date.getDate())}`
+
 @inject("breadStore")
 @observer
 class Monitor extends Component<MonitorProps, MonitorState> {
 
     state = {
         selectedBtn: '',
+        selDay: 0,
+        selUrl: "",
+        type: 'day',
+        day: day,
+        diagram: [],
         urlList: [],
+        histogram: [],
+        errorUrlList: [],
         btnList: [
             //     {
             //     key: 1,
@@ -58,9 +76,10 @@ class Monitor extends Component<MonitorProps, MonitorState> {
     }
     componentDidMount() {
         this.getUrlList()
+
     }
     getUrlList = async () => {
-        let result = await get("monitor/url")
+        let result = await get("monitor/error/url")
         result = result.map((item: any) => {
             return {
                 ...item,
@@ -68,13 +87,164 @@ class Monitor extends Component<MonitorProps, MonitorState> {
             }
         })
         this.setState({
-            urlList: result
+            urlList: result,
+            selUrl: result[0].url
+        }, () => {
+            this.getErrorCountList()
+            this.getErrorUrlList()
+            this.getLineChart()
         })
-        console.log(result)
+    }
+    getErrorCountList = async () => {
+        const { type, day, selUrl } = this.state
+        let result = await get(`monitor/error/count/list?type=${type}&day=${day}&url=${selUrl}`)
+        let total = 0;
+        total = result.reduce((initNum: number, item: any) => {
+            return initNum + item.total
+        }, total)
+        let tmp = result.map((item: any) => {
+            return { item: item.error_type, count: item.total, percent: Number((item.total / total).toFixed(2)) }
+        })
+        this.setState({
+            diagram: tmp
+        })
+    }
+    getErrorUrlList = async () => {
+        const { type, day, selUrl } = this.state
+        let result = await get(`monitor/error/url/list?type=${type}&day=${day}&url=${selUrl}`)
+        result = result.map((item: any) => {
+            return {
+                key: item.id,
+                time: time.getAlltime(item.create_time),
+                error_name: item.error_type,
+                url: item.url,
+                filename: item.filename,
+                message: item.message ? item.message : (item.tag_name ? item.tag_name + "加载错误" : "无描述信息"),
+                adress: item.user_adress ? item.user_adress : "位置不详"
+            }
+        })
+        this.setState({
+            errorUrlList: result
+        })
+    }
+    getLineChart = async () => {
+        const { selUrl, day, selDay, type } = this.state;
+        let result = undefined;
+        if (selDay === 0) {
+            result = await get(`monitor/error/online/day?type=${type}&day=${day}&url=${selUrl}`)
+
+        } else {
+            result = await get(`monitor/error/online/long?type=${type}&day=${selDay}&url=${selUrl}`)
+
+        }
+
+        let tmp: any = []
+        if (Array.isArray(result) && selDay === 0) {
+            let len = result.length
+            for (let i = 0; i < 24; i++) {
+                let year = (i >= 10 ? i + "" : '0' + i)
+                let objJs: any = {
+                    total: 0,
+                    time: year,
+                    error_type: 'jsError',
+                }
+                let objRes: any = {
+                    total: 0,
+                    time: year,
+                    error_type: 'resourceError',
+                }
+                let objPro: any = {
+                    total: 0,
+                    time: year,
+                    error_type: 'promiseError',
+                }
+                for (let j = 0; j < len; j++) {
+                    if (result[j].time === year) {
+                        switch (result[j].error_type) {
+                            case "jsError":
+                                console.log(result[j])
+                                objJs = result[j]
+                                break
+                            case "promiseError":
+                                objPro = result[j]
+                                console.log(result[j])
+                                break
+                            case "resourceError":
+                                objRes = result[j]
+                                console.log(result[j])
+                                break
+                        }
+
+                    }
+                }
+                tmp.push(objPro)
+                tmp.push(objRes)
+                tmp.push(objJs)
+            }
+            this.setState({
+                histogram: tmp,
+            })
+        } else {
+            // let len = type === "year" ? 12 : selDay
+            // for (let i = 0; i < len; i++) {
+            //     let time = result[i].time
+            //     let objJs: any = {
+            //         total: 0,
+            //         time: time,
+            //         error_type: 'jsError',
+            //     }
+            //     let objRes: any = {
+            //         total: 0,
+            //         time: time,
+            //         error_type: 'resourceError',
+            //     }
+            //     let objPro: any = {
+            //         total: 0,
+            //         time: time,
+            //         error_type: 'promiseError',
+            //     }
+            //     let len1 = result.length
+            //     let year = ''
+            //     for (let j = 0; j < len1; j++) {
+            //         if (result[j].time === year) {
+            //             switch (result[j].error_type) {
+            //                 case "jsError":
+            //                     console.log(result[j])
+            //                     objJs = result[j]
+            //                     break
+            //                 case "promiseError":
+            //                     objPro = result[j]
+            //                     console.log(result[j])
+            //                     break
+            //                 case "resourceError":
+            //                     objRes = result[j]
+            //                     console.log(result[j])
+            //                     break
+            //             }
+
+            //         }
+            //     }
+            //     tmp.push(objPro)
+            //     tmp.push(objRes)
+            //     tmp.push(objJs)
+            // }
+            result = result.map((item: any) => {
+                let len = item.time.split("-").length
+                let re = item.time.split("-")
+                return {
+                    total: item.total,
+                    time: re[len - 1 > 0 ? len - 1 : len],
+                    error_type: item.error_type
+                }
+            })
+            this.setState({
+                histogram: result
+            })
+        }
     }
     render() {
-        const { btnList, urlList } = this.state;
-
+        const { btnList, urlList, diagram, histogram, errorUrlList, selUrl } = this.state;
+        console.log(histogram)
         function callback(key: any) {
             console.log(key);
         }
@@ -90,19 +260,30 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                         if ("selectedBtn" === item.key) {
 
                         } else {
-                            let data: any = []
+                            let day = 0
+                            let type = ''
                             switch (item.key) {
                                 case 2:
+                                    day = 7
+                                    type = 'week'
                                     break
                                 case 3:
+                                    day = 30
+                                    type = 'month'
                                     break
                                 case 4:
+                                    day = date.getFullYear()
+                                    type = 'year'
                                     break
                             }
                             this.setState({
-                                selectedBtn: item.key
+                                selectedBtn: item.key,
+                                selDay: day,
+                                type: type
                             }, () => {
-
+                                this.getLineChart()
+                                this.getErrorCountList()
+                                this.getErrorUrlList()
                             })
                         }
 
@@ -123,7 +304,7 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                 title: 'url',
                 dataIndex: 'url',
                 key: 'url',
-                render: (url: string) => <a>{url}</a>,
+                render: (url: string) => <a style={{ color: selUrl === url ? "" : "#000000a6" }}>{url}</a>,
                 ellipsis: true,
             }
 
@@ -147,9 +328,14 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                 render: (url: string) => <a>{url}</a>,
             },
             {
-                title: 'HTTP_CODE',
-                dataIndex: 'code',
-                key: 'code',
+                title: 'filename',
+                dataIndex: 'filename',
+                key: 'filename',
+            },
+            {
+                title: 'message',
+                dataIndex: 'message',
+                key: 'message',
             },
             {
                 title: '地区',
@@ -158,96 +344,17 @@ class Monitor extends Component<MonitorProps, MonitorState> {
             }
 
         ];
-        const data = [
-            {
-                key: '1',
-                total: 60,
-                url: "http://127.0.0.1:3000/template1",
-            },
-            {
-                key: '2',
-                total: 50,
-                url: "http://127.0.0.1:3000/template2",
-            },
-            {
-                key: '3',
-                total: 110,
-                url: "http://127.0.0.1:3000/template3",
-            },
-        ];
-        const data1 = [
-            {
-                key: '1',
-                time: "2020-06-24 03:18:00",
-                error_name: "代理异常_Response Timeout",
-                url: "http://127.0.0.1:3000/template1",
-                code: 400,
-                adress: '河南 安阳'
-            },
-            {
-                key: '2',
-                time: "2020-06-24 03:18:00",
-                error_name: "代理异常_Response Timeout",
-                url: "http://127.0.0.1:3000/template1",
-                code: 400,
-                adress: '河南 安阳'
-            },
-            {
-                key: '3',
-                time: "2020-06-24 03:18:00",
-                error_name: "代理异常_Response Timeout",
-                url: "http://127.0.0.1:3000/template1",
-                code: 400,
-                adress: '河南 安阳'
-            },
-        ];
-        const data3 = [
-            { country: 'Asia', year: '1750', value: 502 },
-            { country: 'Asia', year: '1800', value: 635 },
-            { country: 'Asia', year: '1850', value: 809 },
-            { country: 'Asia', year: '1900', value: 5268 },
-            { country: 'Asia', year: '1950', value: 4400 },
-            { country: 'Asia', year: '1999', value: 3634 },
-            { country: 'Asia', year: '2050', value: 947 },
-            { country: 'Africa', year: '1750', value: 106 },
-            { country: 'Africa', year: '1800', value: 107 },
-            { country: 'Africa', year: '1850', value: 111 },
-            { country: 'Africa', year: '1900', value: 1766 },
-            { country: 'Africa', year: '1950', value: 221 },
-            { country: 'Africa', year: '1999', value: 767 },
-            { country: 'Africa', year: '2050', value: 133 },
-            { country: 'Europe', year: '1750', value: 163 },
-            { country: 'Europe', year: '1800', value: 203 },
-            { country: 'Europe', year: '1850', value: 276 },
-            { country: 'Europe', year: '1900', value: 628 },
-            { country: 'Europe', year: '1950', value: 547 },
-            { country: 'Europe', year: '1999', value: 729 },
-            { country: 'Europe', year: '2050', value: 408 },
-            { country: 'Oceania', year: '1750', value: 200 },
-            { country: 'Oceania', year: '1800', value: 200 },
-            { country: 'Oceania', year: '1850', value: 200 },
-            { country: 'Oceania', year: '1900', value: 460 },
-            { country: 'Oceania', year: '1950', value: 230 },
-            { country: 'Oceania', year: '1999', value: 300 },
-            { country: 'Oceania', year: '2050', value: 300 },
-        ];
+
 
         const scale = {
-            value: {
-                nice: true,
-            },
-            year: {
-                type: 'linear',
-                tickInterval: 50,
-            },
+            // total: {
+            //     nice: true,
+            // },
+            // time: {
+            //     type: 'linear',
+            //     tickInterval: 50,
+            // },
         };
-        const data5 = [
-            { item: '代理异常_Response', count: 40, percent: 0.4 },
-            { item: '加载异常', count: 21, percent: 0.21 },
-            { item: 'js异常', count: 17, percent: 0.17 },
-            { item: '事例代理异常', count: 13, percent: 0.13 }
-        ];
-
         const cols = {
             percent: {
                 formatter: (val: any) => {
@@ -268,23 +375,48 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                     <Row style={{ backgroundColor: "#fff", padding: 16 }} >
                         <Col span={24}>
                             <Tabs defaultActiveKey="1" onChange={callback} tabBarExtraContent={operations}>
-                                <TabPane tab="增长趋势" key="1">
+                                <TabPane tab={<DatePicker onChange={(date: any, dateString: any) => {
+                                    this.setState({
+                                        day: dateString,
+                                        type: 'day',
+                                        selDay: 0,
+                                        selectedBtn: ''
+                                    }, () => {
+                                        this.getErrorCountList()
+                                        this.getErrorUrlList()
+                                        this.getLineChart()
+                                    })
+                                }} />} key="1">
                                     <Row gutter={[16, 16]}>
-                                        <Col span={8}>
-                                            <Table columns={columns} dataSource={urlList} />
+                                        <Col md={24} lg={8} xl={8}>
+                                            <Table
+                                                onRow={(record: any) => {
+                                                    return {
+                                                        onClick: event => {
+                                                            this.setState({
+                                                                selUrl: record.url
+                                                            }, () => {
+                                                                this.getErrorCountList()
+                                                                this.getErrorUrlList()
+                                                                this.getLineChart()
+                                                            })
+                                                        }, // 点击行
+                                                    };
+                                                }}
+                                                columns={columns} dataSource={urlList} />
                                         </Col>
-                                        <Col span={16}>
+                                        <Col md={24} lg={16} xl={16}>
                                             <Title level={4}>监控视图</Title>
                                             <Tabs defaultActiveKey="1" onChange={callback1}>
                                                 <TabPane tab="堆叠图" key="1">
-                                                    <Chart scale={scale} height={500} data={data3} autoFit>
+                                                    <Chart scale={scale} height={500} data={histogram} autoFit>
                                                         <Tooltip shared />
-                                                        <Area adjust="stack" color="country" position="year*value" />
-                                                        <Line adjust="stack" color="country" position="year*value" />
+                                                        <Area adjust="stack" color="error_type" position="time*total" />
+                                                        <Line adjust="stack" color="error_type" position="time*total" />
                                                     </Chart>
                                                 </TabPane>
                                                 <TabPane tab="扇形图" key="2">
-                                                    <Chart height={400} data={data5} scale={cols} autoFit>
+                                                    <Chart height={500} data={diagram} scale={cols} autoFit>
                                                         <Coordinate type="theta" radius={0.75} />
                                                         <Tooltip showTitle={false} />
                                                         <Axis visible={false} />
@@ -298,7 +430,7 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                                                             }}
                                                             label={['count', {
                                                                 content: (data) => {
-                                                                    return `${data.item}: ${data.percent * 100}%`;
+                                                                    return `${data.item}: ${data.count}`;
                                                                 },
                                                             }]}
                                                         />
@@ -310,7 +442,9 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                                     </Row>
                                     <Row>
                                         <Col span={24}>
-                                            <Table columns={columns1} dataSource={data1} />
+                                            <Table
+
+                                                columns={columns1} dataSource={errorUrlList} />
                                         </Col>
                                     </Row>
                                 </TabPane>
@@ -320,7 +454,7 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                     </Row>
 
                 </div>
-            </div>
+            </div >
 
 
         );

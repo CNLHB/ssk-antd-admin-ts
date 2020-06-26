@@ -2,7 +2,7 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-09 17:08:02
- * @LastEditTime: 2020-06-18 14:18:59
+ * @LastEditTime: 2020-06-26 18:10:08
  * @LastEditors: seven
  */
 const gettime = {
@@ -61,7 +61,14 @@ const gettime = {
             return this.dateFormat(new Date(shorttime), "{Y}-{MM}-{DD}");
         }
     },
-
+    // 人性化时间格式
+    getAlltime(shorttime) {
+        shorttime = new Date(shorttime).getTime();
+        shorttime = shorttime.toString().length < 13 ? shorttime * 1000 : shorttime;
+        let now = (new Date()).getTime();
+        let cha = (now - parseInt(shorttime)) / 1000;
+        return this.dateFormat(new Date(shorttime), "{Y}-{MM}-{DD} {t}:{ii}");
+    },
     parseNumber(num) {
         return num < 10 ? "0" + num : num;
     },
