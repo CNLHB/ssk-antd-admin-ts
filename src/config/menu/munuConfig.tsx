@@ -2,7 +2,6 @@ import React from "react";
 import {
     SettingFilled,
     DashboardOutlined,
-    MonitorOutlined,
 } from "@ant-design/icons";
 
 export interface MenuType {
@@ -23,11 +22,11 @@ const menuList: MenuType[] = [
                 key: "/dashboard/log",
                 icon: <SettingFilled />,
             },
-            {
-                title: "分析页",
-                key: "/dashboard/analysis",
-                icon: <SettingFilled />,
-            },
+            // {
+            //     title: "分析页",
+            //     key: "/dashboard/analysis",
+            //     icon: <SettingFilled />,
+            // },
             // {
             //     title: "监控页",
             //     key: "/dashboard/monitor",
@@ -131,41 +130,42 @@ const menuList: MenuType[] = [
     //         },
     //     ],
     // },
-    {
-        title: "广告管理",
-        key: "/bikeMap",
-        icon: <SettingFilled />,
-        children: [
-            {
-                title: "新增广告",
-                key: "/bikeMapdetail",
-                icon: <DashboardOutlined />,
-            },
-            {
-                title: "广告列表",
-                key: "/bikeMapfinish",
-                icon: <DashboardOutlined />,
-            },
-        ],
-    },
+    // {
+    //     title: "广告管理",
+    //     key: "/bikeMap",
+    //     icon: <SettingFilled />,
+    //     children: [
+    //         {
+    //             title: "新增广告",
+    //             key: "/bikeMapdetail",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //         {
+    //             title: "广告列表",
+    //             key: "/bikeMapfinish",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //     ],
+    // },
 
+    // {
+    //     title: "权限设置",
+    //     key: "/permission",
+    //     icon: <SettingFilled />,
+    //     children: [
+    //         {
+    //             title: "新增权限",
+    //             key: "/permission/detail",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //         {
+    //             title: "权限管理",
+    //             key: "/permission/finish",
+    //             icon: <DashboardOutlined />,
+    //         },
+    //     ],
+    // }, 
     {
-        title: "权限设置",
-        key: "/permission",
-        icon: <SettingFilled />,
-        children: [
-            {
-                title: "新增权限",
-                key: "/permission/detail",
-                icon: <DashboardOutlined />,
-            },
-            {
-                title: "权限管理",
-                key: "/permission/finish",
-                icon: <DashboardOutlined />,
-            },
-        ],
-    }, {
         title: "账号管理",
         key: "/account",
         icon: <SettingFilled />,

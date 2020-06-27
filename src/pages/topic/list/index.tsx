@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Form, Input, Row, Col, Tag, Divider, Avatar } from 'antd';
+import { Table, Space, Modal, Form, Input, Row, Col, Tag, Divider, Avatar,message } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
 import { get, post, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
 import time from 'utils/time'
 import { FormInstance } from 'antd/lib/form';
 const { confirm } = Modal;
@@ -66,7 +65,6 @@ class TopicList extends Component<UserListProps> {
 
     };
     handleOk = (e: any) => {
-        console.log(e);
         this.setState({
             visible: false,
         });
@@ -115,7 +113,6 @@ class TopicList extends Component<UserListProps> {
         let cid1 = (cid === -1 || cid === -2) ? "" : cid
         let data = getRandomuserParams(params)
         let result = await get(`topic/title/v2?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}&cid=${cid1}`)
-        console.log(result)
         if (result.items !== null) {
             let items = result.items.map((item: any) => {
                 return {
@@ -158,11 +155,9 @@ class TopicList extends Component<UserListProps> {
         }
         function handleMenuClick(e: any) {
             // message.info('Click on menu item.');
-            console.log('click', e);
         }
         const onFinish = async (values: any) => {
-            console.log('Success:', values);
-            let result = post('category', values)
+            post('category', values)
             this.setState({
                 visible: false,
             });
@@ -269,7 +264,7 @@ class TopicList extends Component<UserListProps> {
                                     }}>
                                         {"冻结"}
                                     </Button>)) : (
-                                        <Button type="primary" key={index} onClick={() => { }}>
+                                        <Button type="primary" key={index} onClick={() => { message.info("敬请期待") }}>
                                             {item.text}
                                         </Button>)
 
@@ -292,6 +287,7 @@ class TopicList extends Component<UserListProps> {
                     putParm('topic/title/freeze', obj).then(() => {
                         const { pagination, selectedCategory, value } = this.state;
                         this.fetch({ pagination }, value, selectedCategory);
+                        message.success("操作成功")
                     })
                 },
                 onCancel() {
@@ -468,9 +464,6 @@ class TopicList extends Component<UserListProps> {
                                     </Form>
                                 </Modal>
                                 <Button
-                                    type="primary"
-                                // onClick={this.showModal}
-                                // icon={<PlusOutlined />}
                                 >
                                     话题管理
                          </Button>

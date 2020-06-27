@@ -2,7 +2,7 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-09 17:08:02
- * @LastEditTime: 2020-06-26 18:10:08
+ * @LastEditTime: 2020-06-27 16:57:33
  * @LastEditors: seven
  */
 const gettime = {
@@ -24,10 +24,10 @@ const gettime = {
         let leave1 = dateDiff % (24 * 3600 * 1000)    //计算天数后剩余的毫秒数
         let hours = Math.floor(leave1 / (3600 * 1000))//计算出小时数
         //计算相差分钟数
-        let leave2 = leave1 % (3600 * 1000)    //计算小时数后剩余的毫秒数
-        let minutes = Math.floor(leave2 / (60 * 1000))//计算相差分钟数
+        //let leave2 = leave1 % (3600 * 1000)    //计算小时数后剩余的毫秒数
+        //let minutes = Math.floor(leave2 / (60 * 1000))//计算相差分钟数
         //计算相差秒数
-        let leave3 = leave2 % (60 * 1000)      //计算分钟数后剩余的毫秒数
+        //let leave3 = leave2 % (60 * 1000)      //计算分钟数后剩余的毫秒数
         // let seconds = Math.round(leave3 / 1000)
         return dayDiff + "天 " + hours + "小时 ";
     },
@@ -65,8 +65,6 @@ const gettime = {
     getAlltime(shorttime) {
         shorttime = new Date(shorttime).getTime();
         shorttime = shorttime.toString().length < 13 ? shorttime * 1000 : shorttime;
-        let now = (new Date()).getTime();
-        let cha = (now - parseInt(shorttime)) / 1000;
         return this.dateFormat(new Date(shorttime), "{Y}-{MM}-{DD} {t}:{ii}");
     },
     parseNumber(num) {

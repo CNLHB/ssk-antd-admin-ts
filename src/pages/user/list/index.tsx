@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Form, Input, Radio, Row, Col, Tag, Avatar } from 'antd';
+import { Table, Space, Modal, Form, Input, Radio, Row, Col, Tag, Avatar, message } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
@@ -58,13 +58,11 @@ class UserList extends Component<UserListProps> {
         this.setState({ selectedRowKeys });
     };
     handleOk = (e: any) => {
-        console.log(e);
         this.setState({
             visible: false,
         });
     };
     handleCancel = (e: any) => {
-        console.log(e);
         this.setState({
             visible: false,
         });
@@ -102,10 +100,8 @@ class UserList extends Component<UserListProps> {
     fetch = async (params: any, value?: string | null) => {
         this.setState({ loading: true });
         value = value === undefined ? "" : value
-        console.log(getRandomuserParams(params))
         let data = getRandomuserParams(params)
         let result = await get(`user/v2/list?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}`)
-        console.log(result)
         if (result.items !== null) {
             let items = result.items.map((item: any) => {
                 return {
@@ -151,11 +147,9 @@ class UserList extends Component<UserListProps> {
         }
         function handleMenuClick(e: any) {
             // message.info('Click on menu item.');
-            console.log('click', e);
         }
         const onFinish = async (values: any) => {
-            console.log('Success:', values);
-            let result = post('user/register/v2', values)
+            post('user/register/v2', values)
             this.setState({
                 visible: false,
             });
@@ -163,7 +157,6 @@ class UserList extends Component<UserListProps> {
             this.fetch({ pagination });
         };
         const onFinishFailed = (errorInfo: any) => {
-            console.log('Failed:', errorInfo);
         };
 
         const columns = [
@@ -254,7 +247,7 @@ class UserList extends Component<UserListProps> {
                                         })
                                     }}>
                                         {"冻结"}
-                                    </Button>)) : (<Button type="primary" key={index} onClick={() => { }}>
+                                    </Button>)) : (<Button type="primary" key={index} onClick={() => { message.info("敬请期待") }}>
                                         {item.text}
                                     </Button>)
 
@@ -277,6 +270,7 @@ class UserList extends Component<UserListProps> {
                     putParm('user/freeze', obj).then(() => {
                         const { pagination } = this.state;
                         this.fetch({ pagination });
+                        message.success("操作成功")
                     })
                 },
                 onCancel() {

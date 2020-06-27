@@ -55,7 +55,8 @@ class AdminStore implements AdminInterface {
 
         let data = {
             phoneNumber: admin.phone,
-            password: admin.password
+            password: admin.password,
+            identity: "管理员",
 
         }
         let result = await post('user/login', data);

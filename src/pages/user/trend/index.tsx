@@ -80,7 +80,6 @@ class UserTrend extends Component<{}, {}> {
                 yearList: yearList
             }
         })
-        console.log(result);
 
     }
     onChange = (checked: boolean) => {
@@ -89,7 +88,6 @@ class UserTrend extends Component<{}, {}> {
 
     render() {
         function callback(key: any) {
-            console.log(key);
         }
         const { loading, data, btnList, selectedBtn, showData, showText } = this.state;
         const { week, upWeek, total, day, yesterday, woman, man, monthList, weekList, yearList } = data;

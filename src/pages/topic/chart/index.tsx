@@ -24,10 +24,8 @@ class TopicTrend extends Component<{}, {}> {
             yesterday: 0,
             total: 0,
             week: 0,
-            woman: 0,
             upWeek: 0,
             year: 0,
-            man: 0,
             day: 0,
             monthList: [],
             weekList: [],
@@ -67,7 +65,6 @@ class TopicTrend extends Component<{}, {}> {
         let yearList = result.data.yearList.splice(len - 12, 12).map((item: any) => {
             return { text: item.months, value: item.total }
         })
-        console.log(result)
         this.setState({
             showData: weekList,
             loading: false,
@@ -92,10 +89,10 @@ class TopicTrend extends Component<{}, {}> {
 
     render() {
         function callback(key: any) {
-            console.log(key);
+            // console.log(key);
         }
         const { loading, data, btnList, selectedBtn, showData, showText } = this.state;
-        const { week, upWeek, total, day, yesterday, categoryTotal, woman, man, monthList, weekList, yearList } = data;
+        const { week, upWeek, total, day, yesterday, categoryTotal, monthList, weekList, yearList } = data;
         let weeked = upWeek === 0 ? week * 100 : Math.round((week / upWeek) * 100);
         let dayed = yesterday === 0 ? day * 100 : Math.round((day / yesterday) * 100);
         const operations = <Row gutter={[12, 0]}>{btnList.map((item: any) => {

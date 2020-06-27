@@ -2,10 +2,10 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-20 17:52:32
- * @LastEditTime: 2020-06-20 18:17:26
+ * @LastEditTime: 2020-06-27 16:52:19
  * @LastEditors: seven
  */
-function getName() {
+export function getName() {
     var familyNames = new Array(
         "赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈",
         "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",
@@ -32,14 +32,10 @@ function getName() {
     );
     var i = parseInt(1 * Math.random()) * + parseInt(1 * Math.random());
     var familyName = familyNames[i];
-    var j = parseInt(1 * Math.random()) * + parseInt(1 * Math.random());
+    // var j = parseInt(1 * Math.random()) * + parseInt(1 * Math.random());
     var givenName = givenNames[i];
     var name = familyName + givenName;
-    var x = document.getElementsByName("client_name");
-    for (var i = 0; i < x.length; i++) {
-        var o = x[i];
-        o.value = name;
-    }
+
 }
 export function getMoble() {
     var prefixArray = new Array("130", "131", "132", "133", "135", "137", "138", "170", "187", "189");
@@ -49,7 +45,6 @@ export function getMoble() {
         prefix = prefix + Math.floor(Math.random() * 10);
     }
     return prefix
-    var x = document.getElementsByName("mobile_tel");
 
 }
 export function getId_no() {

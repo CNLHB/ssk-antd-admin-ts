@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Input, Row, Col, Tag, Divider } from 'antd';
+import { Table, Space, Modal, Input, Row, Col, Tag, Divider, message } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
 import { get, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
 import time from 'utils/time'
 const { confirm } = Modal;
 interface UserListProps {
@@ -81,10 +80,8 @@ class DynamicList extends Component<UserListProps> {
         this.setState({ loading: true });
         value = value === undefined ? "" : value
         let cid1 = (cid === -1 || cid === -2) ? "" : cid
-        console.log(getRandomuserParams(params))
         let data = getRandomuserParams(params)
         let result = await get(`topic/v2/page?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}&cid=${cid1}`)
-        console.log(result)
         if (typeof result === "object") {
             let items = result.items.map((item: any) => {
                 return {
@@ -162,10 +159,6 @@ class DynamicList extends Component<UserListProps> {
                 width: 80,
                 ellipsis: true,
             },
-            // {
-            //     title: '标题',
-            //     dataIndex: 'title',
-            // },
             {
                 title: '发布时间',
                 dataIndex: 'createTime',
@@ -217,7 +210,7 @@ class DynamicList extends Component<UserListProps> {
                                     }}>
                                         {"冻结"}
                                     </Button>)) : (
-                                        <Button type="primary" key={index} onClick={() => { }}>
+                                        <Button type="primary" key={index} onClick={() => { message.info("敬请期待") }}>
                                             {item.text}
                                         </Button>)
 
@@ -241,12 +234,14 @@ class DynamicList extends Component<UserListProps> {
                         putParm('topic/active/list', obj).then(() => {
                             const { pagination, selectedCategory, value } = this.state;
                             this.fetch({ pagination }, value, selectedCategory);
+                            message.success("操作成功")
                         })
                         return
                     }
                     putParm('topic/freeze', obj).then(() => {
                         const { pagination, selectedCategory, value } = this.state;
                         this.fetch({ pagination }, value, selectedCategory);
+                        message.success("操作成功")
                     })
                 },
                 onCancel() {
@@ -388,8 +383,6 @@ class DynamicList extends Component<UserListProps> {
                         <Row style={{ padding: 12 }}>
                             <Space>
                                 <Button
-                                    type="primary"
-                                // icon={<PlusOutlined />}
                                 >
                                     动态管理
                          </Button>

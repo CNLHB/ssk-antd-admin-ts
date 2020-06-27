@@ -42,7 +42,7 @@ export default class NavMenu extends Component<MenuProps, { menuTreeNode: any }>
         const { theme, setBreadTitle } = this.props;
         function handleClick(e: any) {
             setBreadTitle(matchTitle[e.key])
-            console.log("click", matchTitle[e.key]);
+            // console.log("click", matchTitle[e.key]);
         }
         return (
             <div>

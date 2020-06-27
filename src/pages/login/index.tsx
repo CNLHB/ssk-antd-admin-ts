@@ -91,7 +91,7 @@ class Login extends React.Component<AdminProps> {
                             <Row>
                                 <p>
                                     <span className={styles.marginRight}>
-                                        phone：15363398328
+                                        phone：15812942054
                                              </span>
 
                                     <span>

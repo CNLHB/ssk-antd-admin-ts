@@ -2,31 +2,14 @@ import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { Button, Card, DatePicker, Tabs, Typography, Row, Table, Tag, Col, Space } from 'antd';
-import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
+import { Button, Card, DatePicker, Row, Table, Col, Space } from 'antd';
 import { get } from 'config/api/axios'
 import {
-    Chart,
-    Area,
-    Line,
-    Tooltip,
-    Geom,
-    BarChart,
-    Axis,
-    Coord,
-    Interval,
-    Coordinate,
+
     LineChart,
     WaterfallChart,
-    Legend,
 } from "bizcharts";
-import DataSet from "@antv/data-set";
-interface ColorConfig {
-    [key: string]: string
-}
-const { Title, Text } = Typography;
-const { Meta } = Card;
-const { TabPane } = Tabs;
+
 interface MonitorProps {
     breadStore: BreadInterface
 }
@@ -50,7 +33,7 @@ let day = `${date.getFullYear()}-${date.getMonth() + 1 >= 10 ? date.getMonth() +
 @observer
 class Performance extends Component<MonitorProps, MonitorState> {
     state = {
-        selectedBtn: '',
+        selectedBtn: '1',
         type: 'day',
         waterfall: [],
         urlList: [],
@@ -111,6 +94,10 @@ class Performance extends Component<MonitorProps, MonitorState> {
         ],
         btnList: [
             {
+                key: 1,
+                text: "本日"
+            },
+            {
                 key: 2,
                 text: "本周"
             },
@@ -167,26 +154,25 @@ class Performance extends Component<MonitorProps, MonitorState> {
                 for (let j = 0; j < len; j++) {
                     if (result[j].time.split(" ")[1] === (year + ":00:00")) {
                         obj = result[j]
-                        console.log(result[j])
                     }
                 }
                 tmp.push({
                     type: 'DNS查询', year: year, value: obj.dns_time,
                 })
                 tmp.push({
-                    type: 'TCP连接时间', year: (i >= 10 ? i : '0' + i), value: obj.connect_time,
+                    type: 'TCP连接时间', year: year, value: obj.connect_time,
                 })
                 tmp.push({
-                    type: '首字节到达时间', year: (i >= 10 ? i : '0' + i), value: obj.ttfb_time,
+                    type: '首字节到达时间', year: year, value: obj.ttfb_time,
                 })
                 tmp.push({
-                    type: '响应的读取时间', year: (i >= 10 ? i : '0' + i), value: obj.response_time,
+                    type: '响应的读取时间', year: year, value: obj.response_time,
                 })
                 tmp.push({
-                    type: 'DOM解析的时间', year: (i >= 10 ? i : '0' + i), value: obj.parse_dom_time,
+                    type: 'DOM解析的时间', year: year, value: obj.parse_dom_time,
                 })
                 tmp.push({
-                    type: '首次可交互时间', year: (i >= 10 ? i : '0' + i), value: obj.time_to_interactive,
+                    type: '首次可交互时间', year: year, value: obj.time_to_interactive,
                 })
             }
             this.setState({
@@ -195,8 +181,8 @@ class Performance extends Component<MonitorProps, MonitorState> {
         } else {
             let len = result.length
             for (let i = 0; i < len; i++) {
-                let { dns_time, ttfb_time, dom_content_loaded_time,
-                    load_time, connect_time, parse_dom_time,
+                let { dns_time, ttfb_time,
+                    connect_time, parse_dom_time,
                     response_time, time_to_interactive, current_day } = result[i]
                 tmp.push({
                     type: 'DNS查询', year: current_day, value: dns_time,
@@ -221,17 +207,16 @@ class Performance extends Component<MonitorProps, MonitorState> {
                 histogram: tmp,
             })
         }
-        console.log(result)
     }
 
 
     getOverView = async () => {
-        const { selUrl } = this.state;
-        let result = await get(`monitor/per/oline/current?day=${day}&url=${selUrl}`)
+        const { selUrl, day, type } = this.state;
+        let result = await get(`monitor/per/oline/current?type=${type}&day=${day}&url=${selUrl}`)
         // let tmp: Array<any> = []
         if (Array.isArray(result) && result.length === 1) {
-            let { dns_time, ttfb_time, dom_content_loaded_time,
-                load_time, connect_time, parse_dom_time,
+            let { dns_time, ttfb_time,
+                connect_time, parse_dom_time,
                 response_time, time_to_interactive } = result[0]
             let tmp = [
                 { type: 'DNS查询', time: dns_time },
@@ -258,28 +243,34 @@ class Performance extends Component<MonitorProps, MonitorState> {
     render() {
         const { btnList, urlList, selUrl, waterfall, histogram, selectedBtn } = this.state;
         // 数据源
+        // function callback(key: any) {
+        //     console.log(key);
+        // }
 
-        function callback(key: any) {
-            console.log(key);
-        }
-        function callback1(key: any) {
-            console.log(key);
-        }
         const { breadTitle } = this.props.breadStore!
         const operations = <Row gutter={[12, 0]}>{btnList.map((item: any) => {
             return <Col key={item.key}>
                 <Button
-                    type={selectedBtn === item.key ? "primary" : undefined}
+                    type={selectedBtn + '' === item.key + '' ? "primary" : undefined}
                     onClick={() => {
-                        if (selectedBtn === item.key) {
+                        if (selectedBtn + '' === item.key + '') {
 
                         } else {
                             let data = 0
+                            let type = ''
                             switch (item.key) {
+                                case 1:
+                                    type = 'day'
+                                    this.setState({
+                                        day: day
+                                    })
+                                    break
                                 case 2:
+                                    type = 'week'
                                     data = 7
                                     break
                                 case 3:
+                                    type = 'month'
                                     data = 30
                                     break
                                 case 4:
@@ -287,9 +278,11 @@ class Performance extends Component<MonitorProps, MonitorState> {
                             }
                             this.setState({
                                 selectedBtn: item.key,
+                                type: type,
                                 selDay: data
                             }, () => {
                                 this.getLineChart()
+                                this.getOverView()
                             })
                         }
 
@@ -334,8 +327,9 @@ class Performance extends Component<MonitorProps, MonitorState> {
 
                     <Row style={{ backgroundColor: "#fff" }} >
                         <Col span={24}>
+
                             <Row gutter={[16, 16]}>
-                                <Col md={24} lg={8} xl={8}>
+                                <Col xs={24} md={24} lg={8} xl={8}>
                                     <Space direction="vertical" size="middle">
                                         <DatePicker onChange={onChange} />
                                         {operations}

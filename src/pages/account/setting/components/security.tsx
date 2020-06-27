@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import { List } from 'antd';
-
+import { List, message } from 'antd';
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const passwordStrength = {
@@ -21,9 +20,13 @@ const passwordStrength = {
         </span>
     ),
 };
+interface SecurityViewProps {
+    admin?: any //  这里比较关键 ？表示可或缺，如果没有就会报错。
+}
 
-class SecurityView extends Component {
-    getData = () => [
+
+class SecurityView extends Component<SecurityViewProps> {
+    getData = (number: any) => [
         {
             title: "账户密码",
             description: (
@@ -33,51 +36,31 @@ class SecurityView extends Component {
                 </>
             ),
             actions: [
-                <a key="Modify">
+                <a key="Modify" href="#" onClick={() => {
+                    message.info('敬请期待');
+                }}>
                     修改
         </a>,
             ],
         },
         {
             title: "密保手机",
-            description: `已绑定手机：138****8293`,
+            description: `已绑定手机：${number}`,
             actions: [
-                <a key="Modify">
+                <a key="Modify" href="#" onClick={() => {
+                    message.info('敬请期待');
+                }}>
                     修改
         </a>,
             ],
         },
-        // {
-        //     title: "x",
-        //     description: "x",
-        //     actions: [
-        //         <a key="Set">
-        //             "set"
-        // </a>,
-        //     ],
-        // },
-        // {
-        //     title: 1,
-        //     description: `1xxxqq：ant***sign.com`,
-        //     actions: [
-        //         <a key="Modify">
-        //             1
-        // </a>,
-        //     ],
-        // },
-        // {
-        //     title: 1,
-        //     description: 2,
-        //     actions: [
-        //         <a key="bind">
-        //             b
-        // </a>,
-        //     ],
-        // },
     ];
 
     render() {
-        const data = this.getData();
+        const { admin } = this.props;
+
+        const data = this.getData(admin.phoneNumber);
+
         return (
             <>
                 <List<Unpacked<typeof data>>

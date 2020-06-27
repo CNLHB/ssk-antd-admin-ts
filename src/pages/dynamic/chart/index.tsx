@@ -25,10 +25,8 @@ class DynamicTrend extends Component<{}, {}> {
             yesterday: 0,
             total: 0,
             week: 0,
-            woman: 0,
             upWeek: 0,
             year: 0,
-            man: 0,
             day: 0,
             monthList: [],
             weekList: [],
@@ -84,7 +82,6 @@ class DynamicTrend extends Component<{}, {}> {
                 categoryTotal: result.data.categoryTotal
             }
         })
-        console.log(result);
 
     }
     onChange = (checked: boolean) => {
@@ -96,7 +93,7 @@ class DynamicTrend extends Component<{}, {}> {
             console.log(key);
         }
         const { loading, data, btnList, selectedBtn, showData, showText } = this.state;
-        const { week, upWeek, total, day, categoryTotal, yesterday, woman, man, monthList, weekList, yearList } = data;
+        const { week, upWeek, total, day, categoryTotal, yesterday, monthList, weekList, yearList } = data;
         let weeked = upWeek === 0 ? week * 100 : Math.round((week / upWeek) * 100);
         let dayed = yesterday === 0 ? day * 100 : Math.round((day / yesterday) * 100);
         const operations = <Row gutter={[12, 0]}>{btnList.map((item: any) => {

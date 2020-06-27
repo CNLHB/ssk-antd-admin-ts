@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { Button, Card, Tabs, Typography, Row, Table, Tag, Col, Space, DatePicker } from 'antd';
-import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
+import { Button, Tabs, Typography, Row, Table, Col, DatePicker, Divider, Space } from 'antd';
 import time from 'utils/time'
 import { get } from 'config/api/axios'
 import {
@@ -11,18 +10,12 @@ import {
     Area,
     Line,
     Tooltip,
-    Geom,
     Axis,
     Interval,
     Coordinate,
-    View,
-    Guide,
-    PieChart,
-    Legend,
+
 } from "bizcharts";
-import DataSet from "@antv/data-set";
-const { Title, Text } = Typography;
-const { Meta } = Card;
+const { Title, } = Typography;
 const { TabPane } = Tabs;
 interface MonitorProps {
     breadStore: BreadInterface
@@ -47,7 +40,7 @@ let day = `${date.getFullYear()}-${date.getMonth() + 1 >= 10 ? date.getMonth() +
 class Monitor extends Component<MonitorProps, MonitorState> {
 
     state = {
-        selectedBtn: '',
+        selectedBtn: '1',
         selDay: 0,
         selUrl: "",
         type: 'day',
@@ -57,10 +50,10 @@ class Monitor extends Component<MonitorProps, MonitorState> {
         histogram: [],
         errorUrlList: [],
         btnList: [
-            //     {
-            //     key: 1,
-            //     text: "今日"
-            // },
+            {
+                key: 1,
+                text: "本日"
+            },
             {
                 key: 2,
                 text: "本周"
@@ -88,7 +81,8 @@ class Monitor extends Component<MonitorProps, MonitorState> {
         })
         this.setState({
             urlList: result,
-            selUrl: result[0].url
+            selUrl: result[0].url,
+            selectedBtn: "1"
         }, () => {
             this.getErrorCountList()
             this.getErrorUrlList()
@@ -162,16 +156,13 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                     if (result[j].time === year) {
                         switch (result[j].error_type) {
                             case "jsError":
-                                console.log(result[j])
                                 objJs = result[j]
                                 break
                             case "promiseError":
                                 objPro = result[j]
-                                console.log(result[j])
                                 break
                             case "resourceError":
                                 objRes = result[j]
-                                console.log(result[j])
                                 break
                         }
 
@@ -243,8 +234,7 @@ class Monitor extends Component<MonitorProps, MonitorState> {
         }
     }
     render() {
-        const { btnList, urlList, diagram, histogram, errorUrlList, selUrl } = this.state;
-        console.log(histogram)
+        const { btnList, urlList, diagram, histogram, selectedBtn, errorUrlList, selUrl } = this.state;
         function callback(key: any) {
             console.log(key);
         }
@@ -252,33 +242,42 @@ class Monitor extends Component<MonitorProps, MonitorState> {
             console.log(key);
         }
         const { breadTitle } = this.props.breadStore!
-        const operations = <Row gutter={[12, 0]}>{btnList.map((item: any) => {
-            return <Col key={item.key}>
+        const operations = <Space >{btnList.map((item: any) => {
+            return <Col
+                key={item.key}
+            >
                 <Button
-                    type={"selectedBtn" === item.key ? "primary" : undefined}
+                    type={selectedBtn + '' === item.key + '' ? "primary" : undefined}
                     onClick={() => {
-                        if ("selectedBtn" === item.key) {
+                        if (selectedBtn + '' === item.key + '') {
 
                         } else {
-                            let day = 0
+                            let day1 = 0
                             let type = ''
                             switch (item.key) {
+                                case 1:
+                                    day1 = 0
+                                    type = 'day'
+                                    this.setState({
+                                        day: day
+                                    })
+                                    break
                                 case 2:
-                                    day = 7
+                                    day1 = 7
                                     type = 'week'
                                     break
                                 case 3:
-                                    day = 30
+                                    day1 = 30
                                     type = 'month'
                                     break
                                 case 4:
-                                    day = date.getFullYear()
+                                    day1 = date.getFullYear()
                                     type = 'year'
                                     break
                             }
                             this.setState({
                                 selectedBtn: item.key,
-                                selDay: day,
+                                selDay: day1,
                                 type: type
                             }, () => {
                                 this.getLineChart()
@@ -291,7 +290,7 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                 >{item.text}</Button>
             </Col>
         })}
-        </Row>
+        </Space>
         const columns = [
             {
                 title: 'total',
@@ -314,33 +313,44 @@ class Monitor extends Component<MonitorProps, MonitorState> {
                 title: '时间',
                 dataIndex: 'time',
                 key: 'time',
+                width: 150,
+                ellipsis: true,
 
             },
             {
                 title: 'error_name',
                 dataIndex: 'error_name',
                 key: 'error_name',
+                width: 120,
+                ellipsis: true,
             },
             {
                 title: 'URL',
                 dataIndex: 'url',
                 key: 'url',
                 render: (url: string) => <a>{url}</a>,
+                ellipsis: true,
             },
             {
                 title: 'filename',
                 dataIndex: 'filename',
                 key: 'filename',
+                width: "40%",
+                ellipsis: true,
             },
             {
                 title: 'message',
                 dataIndex: 'message',
                 key: 'message',
+                width: 150,
+                ellipsis: true,
             },
             {
                 title: '地区',
                 dataIndex: 'adress',
                 key: 'adress',
+                width: 120,
+                ellipsis: true,
             }
 
         ];
@@ -366,90 +376,95 @@ class Monitor extends Component<MonitorProps, MonitorState> {
         return (
             <div>
                 <PageBread bread={breadTitle}></PageBread>
-
                 <div
                     className="site-layout-background"
                     style={{ padding: 24, margin: 24, minHeight: 460 }}
                 >
 
-                    <Row style={{ backgroundColor: "#fff", padding: 16 }} >
+                    <Row style={{ backgroundColor: "#fff" }} >
                         <Col span={24}>
-                            <Tabs defaultActiveKey="1" onChange={callback} tabBarExtraContent={operations}>
-                                <TabPane tab={<DatePicker onChange={(date: any, dateString: any) => {
-                                    this.setState({
-                                        day: dateString,
-                                        type: 'day',
-                                        selDay: 0,
-                                        selectedBtn: ''
-                                    }, () => {
-                                        this.getErrorCountList()
-                                        this.getErrorUrlList()
-                                        this.getLineChart()
-                                    })
-                                }} />} key="1">
-                                    <Row gutter={[16, 16]}>
-                                        <Col md={24} lg={8} xl={8}>
-                                            <Table
-                                                onRow={(record: any) => {
-                                                    return {
-                                                        onClick: event => {
-                                                            this.setState({
-                                                                selUrl: record.url
-                                                            }, () => {
-                                                                this.getErrorCountList()
-                                                                this.getErrorUrlList()
-                                                                this.getLineChart()
-                                                            })
-                                                        }, // 点击行
-                                                    };
-                                                }}
-                                                columns={columns} dataSource={urlList} />
-                                        </Col>
-                                        <Col md={24} lg={16} xl={16}>
-                                            <Title level={4}>监控视图</Title>
-                                            <Tabs defaultActiveKey="1" onChange={callback1}>
-                                                <TabPane tab="堆叠图" key="1">
-                                                    <Chart scale={scale} height={500} data={histogram} autoFit>
-                                                        <Tooltip shared />
-                                                        <Area adjust="stack" color="error_type" position="time*total" />
-                                                        <Line adjust="stack" color="error_type" position="time*total" />
-                                                    </Chart>
-                                                </TabPane>
-                                                <TabPane tab="扇形图" key="2">
-                                                    <Chart height={500} data={diagram} scale={cols} autoFit>
-                                                        <Coordinate type="theta" radius={0.75} />
-                                                        <Tooltip showTitle={false} />
-                                                        <Axis visible={false} />
-                                                        <Interval
-                                                            position="percent"
-                                                            adjust="stack"
-                                                            color="item"
-                                                            style={{
-                                                                lineWidth: 1,
-                                                                stroke: '#fff',
-                                                            }}
-                                                            label={['count', {
-                                                                content: (data) => {
-                                                                    return `${data.item}: ${data.count}`;
-                                                                },
-                                                            }]}
-                                                        />
-                                                    </Chart>
+                            <Row gutter={[16, 16]}>
+                                <Col sm={24} md={24} lg={6}>
+                                    <DatePicker onChange={(date: any, dateString: any) => {
+                                        this.setState({
+                                            day: dateString,
+                                            type: 'day',
+                                            selDay: 0,
+                                            selectedBtn: ''
+                                        }, () => {
+                                            this.getErrorCountList()
+                                            this.getErrorUrlList()
+                                            this.getLineChart()
+                                        })
+                                    }} /></Col>
+                                <Col sm={24} md={24} lg={18}>
 
-                                                </TabPane>
-                                            </Tabs>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span={24}>
-                                            <Table
+                                </Col>
+                            </Row>
+                            {operations}
+                            <Divider style={{ margin: "16px 0" }}></Divider>
 
-                                                columns={columns1} dataSource={errorUrlList} />
-                                        </Col>
-                                    </Row>
-                                </TabPane>
+                            <Row gutter={[16, 16]}>
+                                <Col md={24} lg={8} xl={8}>
+                                    <Table
+                                        onRow={(record: any) => {
+                                            return {
+                                                onClick: event => {
+                                                    this.setState({
+                                                        selUrl: record.url
+                                                    }, () => {
+                                                        this.getErrorCountList()
+                                                        this.getErrorUrlList()
+                                                        this.getLineChart()
+                                                    })
+                                                }, // 点击行
+                                            };
+                                        }}
+                                        columns={columns} dataSource={urlList} />
+                                </Col>
+                                <Col xs={24} md={24} lg={16} xl={16}>
+                                    <Title level={4}>监控视图</Title>
+                                    <Tabs defaultActiveKey="1" onChange={callback1}>
+                                        <TabPane tab="堆叠图" key="1">
+                                            <Chart scale={scale} height={500} data={histogram} autoFit>
+                                                <Tooltip shared />
+                                                <Area adjust="stack" color="error_type" position="time*total" />
+                                                <Line adjust="stack" color="error_type" position="time*total" />
+                                            </Chart>
+                                        </TabPane>
+                                        <TabPane tab="扇形图" key="2">
+                                            <Chart height={500} data={diagram} scale={cols} autoFit>
+                                                <Coordinate type="theta" radius={0.75} />
+                                                <Tooltip showTitle={false} />
+                                                <Axis visible={false} />
+                                                <Interval
+                                                    position="percent"
+                                                    adjust="stack"
+                                                    color="item"
+                                                    style={{
+                                                        lineWidth: 1,
+                                                        stroke: '#fff',
+                                                    }}
+                                                    label={['count', {
+                                                        content: (data) => {
+                                                            return `${data.item}: ${data.count}`;
+                                                        },
+                                                    }]}
+                                                />
+                                            </Chart>
 
-                            </Tabs>
+                                        </TabPane>
+                                    </Tabs>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={24}>
+                                    <Table
+                                        style={{ width: "100%", overflowX: "auto" }}
+                                        columns={columns1} dataSource={errorUrlList} />
+                                </Col>
+                            </Row>
+
                         </Col>
                     </Row>
 

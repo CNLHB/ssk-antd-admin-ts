@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Input, Row, Col, Tag, Form } from 'antd';
+import { Table, Space, Modal, Input, Row, Col, Tag, Form, message } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
@@ -23,13 +23,7 @@ const tailLayout = {
     wrapperCol: { offset: 6, span: 16 },
 };
 
-const getRandomuserParams = (params: any) => {
-    return {
-        results: params.pagination.pageSize,
-        page: params.pagination.current,
-        ...params,
-    };
-};
+
 @inject("breadStore")
 @observer
 class CategoryList extends Component<UserListProps> {
@@ -100,9 +94,7 @@ class CategoryList extends Component<UserListProps> {
     fetch = async (params: any, value?: string | null) => {
         this.setState({ loading: true });
         value = value === undefined ? "" : value
-        let data = getRandomuserParams(params)
         let result = await get('category/list')
-        console.log(result)
         let items = result.map((item: any) => {
             return {
                 key: item.id,
@@ -123,7 +115,7 @@ class CategoryList extends Component<UserListProps> {
         });
     };
     render() {
-        const { data, pagination, loading, selectedRowKeys, category, selectedCategory } = this.state;
+        const { data, pagination, loading, selectedRowKeys } = this.state;
         const { breadTitle } = this.props.breadStore!
         const rowSelection = {
             selectedRowKeys,
@@ -198,7 +190,7 @@ class CategoryList extends Component<UserListProps> {
                                         })
                                     }}>
                                         {"冻结"}
-                                    </Button>)) : (<Button type="primary" key={index} onClick={() => { }}>
+                                    </Button>)) : (<Button type="primary" key={index} onClick={() => { message.info("敬请期待") }}>
                                         {item.text}
                                     </Button>)
 
@@ -213,7 +205,7 @@ class CategoryList extends Component<UserListProps> {
         ];
         const onFinish = async (values: any) => {
             console.log('Success:', values);
-            let result = post('category', values)
+            post('category', values)
             this.setState({
                 visible: false,
             });
@@ -235,6 +227,7 @@ class CategoryList extends Component<UserListProps> {
                     putParm('category', obj).then(() => {
                         const { pagination } = this.state;
                         this.fetch({ pagination });
+                        message.success("操作成功")
                     })
                 },
                 onCancel() {

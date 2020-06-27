@@ -1,24 +1,14 @@
 import React from "react";
-import { Badge, Avatar, Dropdown } from "antd";
+import { Avatar, Dropdown } from "antd";
 import DraopdownItem from '../dropdown-item/index'
 import './index.less'
 import {
     GlobalOutlined,
-    MessageOutlined,
     QuestionCircleOutlined
 } from "@ant-design/icons";
 
-interface HeaderProps {
-    userInfo: any,
-    logout(): void
-}
 
-const content = (
-    <div>
-        <p>Content</p>
-        <p>Content</p>
-    </div>
-);
+
 
 
 
@@ -28,11 +18,11 @@ export default class DropdownItem extends React.Component<{ userInfo: any, logou
         return (
             <div className="headerRight">
                 <div className="header-hover" ><QuestionCircleOutlined /></div>
-                <Dropdown className="header-hover badge" overlay={content} placement="bottomRight" trigger={['click']}>
+                {/* <Dropdown className="header-hover badge" overlay={content} placement="bottomRight" trigger={['click']}>
                     <Badge offset={[-11, 0]} count={1}>
                         <span> <MessageOutlined /></span>
                     </Badge>
-                </Dropdown>
+                </Dropdown> */}
                 <Dropdown className="header-hover"
                     overlay={<DraopdownItem logout={this.props.logout} />}
                     overlayStyle={{ minWidth: 160 }}
