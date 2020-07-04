@@ -3,13 +3,13 @@ import { Table, Space, Modal, Form, Input, Radio, Row, Col, Tag, Avatar, message
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { get, post, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { FormInstance } from 'antd/lib/form';
 import { getRandomName, getMoble } from 'utils/createInfo'
+import { getUserList, userRegister, freezeUser } from 'xhr/api/user/list'
 const { confirm } = Modal;
 interface UserListProps {
     breadStore: BreadInterface
@@ -101,39 +101,15 @@ class UserList extends Component<UserListProps> {
         this.setState({ loading: true });
         value = value === undefined ? "" : value
         let data = getRandomuserParams(params)
-        let result = await get(`user/v2/list?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}`)
-        if (result.items !== null) {
-            let items = result.items.map((item: any) => {
-                return {
-                    key: item.id,
-                    id: item.id,
-                    name: item.userName,
-                    phone: item.phoneNumber,
-                    email: item.email,
-                    url: item.authorUrl,
-                    gender: item.gender === 0 ? "男" : "女",
-                    status: item.status,
-                    action: [{ id: item.id, text: item.status === false ? "冻结" : "解冻" }, { id: item.id, text: "详情" }]
-                }
-            })
-            this.setState({
-                loading: false,
-                data: items,
-                pagination: {
-                    ...params.pagination,
-                    total: result.total,
-                },
-            });
-        } else {
-            this.setState({
-                loading: false,
-                data: [],
-                pagination: {
-                    ...params.pagination,
-                    total: 0,
-                },
-            });
-        }
+        let result = await getUserList(data.pagination.current, data.pagination.pageSize, value)
+        this.setState({
+            loading: false,
+            data: result.items,
+            pagination: {
+                ...params.pagination,
+                total: result.total,
+            },
+        });
 
 
     };
@@ -149,12 +125,18 @@ class UserList extends Component<UserListProps> {
             // message.info('Click on menu item.');
         }
         const onFinish = async (values: any) => {
-            post('user/register/v2', values)
-            this.setState({
-                visible: false,
-            });
-            const { pagination } = this.state;
-            this.fetch({ pagination });
+            let result = await userRegister(values)
+
+            if (result.code === 0) {
+                this.setState({
+                    visible: false,
+                });
+                const { pagination } = this.state;
+                this.fetch({ pagination });
+            } else {
+                message.error("用户注册失败！请稍后再试")
+            }
+
         };
         const onFinishFailed = (errorInfo: any) => {
         };
@@ -266,12 +248,16 @@ class UserList extends Component<UserListProps> {
                 icon: <ExclamationCircleOutlined />,
                 okText: '确定',
                 cancelText: '返回',
-                onOk: () => {
-                    putParm('user/freeze', obj).then(() => {
+                onOk: async () => {
+                    let result = await freezeUser(obj)
+                    if (result.code === 0) {
+                        message.success("操作成功")
                         const { pagination } = this.state;
                         this.fetch({ pagination });
-                        message.success("操作成功")
-                    })
+                    } else {
+                        message.error("操作失败")
+                    }
+
                 },
                 onCancel() {
                     console.log('Cancel');

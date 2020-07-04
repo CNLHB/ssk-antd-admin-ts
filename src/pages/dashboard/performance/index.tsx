@@ -3,7 +3,8 @@ import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
 import { Button, Card, DatePicker, Row, Table, Col, Space } from 'antd';
-import { get } from 'config/api/axios'
+import { getUrlAPI, getOverViewAPI, getLineChartAPI } from 'xhr/api/dashboard/performance'
+
 import {
 
     LineChart,
@@ -16,8 +17,6 @@ interface MonitorProps {
 interface MonitorState {
     btnList: Array<any>
     urlList: Array<any>
-    timeArray: Array<any>
-    rangeArray: Array<any>
     histogram: Array<any>
     waterfall: Array<any>
     selectedBtn: string
@@ -42,56 +41,6 @@ class Performance extends Component<MonitorProps, MonitorState> {
         selUrl: "",
         selDay: 0,
         day: day,
-        timeArray: [{
-            key: 'dom_ready_ms',
-            value: 'DOM_READY_耗时'
-        },
-        {
-            key: 'first_render_ms',
-            value: '首次渲染耗时'
-        },
-        {
-            key: 'first_response_ms',
-            value: '首次可交互耗时'
-        },
-        {
-            key: 'first_tcp_ms',
-            value: '首包时间耗时'
-        },
-        {
-            key: 'load_complete_ms',
-            value: '页面完全加载耗时'
-        },
-        {
-            key: 'ssl_connect_ms',
-            value: 'SSL连接耗时'
-        }
-        ],
-        rangeArray: [{
-            key: 'dns_lookup_ms',
-            value: 'DNS查询耗时'
-        },
-        {
-            key: 'tcp_connect_ms',
-            value: 'TCP链接耗时'
-        },
-        {
-            key: 'response_request_ms',
-            value: '请求响应耗时'
-        },
-        {
-            key: 'response_transfer_ms',
-            value: '内容传输耗时'
-        },
-        {
-            key: 'dom_parse_ms',
-            'value': 'DOM解析耗时'
-        },
-        {
-            key: 'load_resource_ms',
-            value: '资源加载耗时'
-        }
-        ],
         btnList: [
             {
                 key: 1,
@@ -113,130 +62,31 @@ class Performance extends Component<MonitorProps, MonitorState> {
     }
     getUrlList = async () => {
 
-        let result = await get("monitor/url")
-        result = result.map((item: any) => {
-            return {
-                ...item,
-                key: item.url
-            }
-        })
+        let result = await getUrlAPI()
+
         this.setState({
             urlList: result,
-            selUrl: result[0].url
+            selUrl: result[0] ? result[0].url : ""
         })
         this.getLineChart()
         this.getOverView()
     }
     getLineChart = async () => {
         const { selUrl, day, selDay } = this.state;
-        let result = undefined;
-        if (selDay === 0) {
-            result = await get(`monitor/per/oline/day?day=${day}&url=${selUrl}`)
+        let result = await getLineChartAPI(selUrl, day, selDay);
 
-        } else {
-            result = await get(`monitor/per/oline/long?day=${selDay}&url=${selUrl}`)
-
-        }
-
-        let tmp = []
-        if (Array.isArray(result) && selDay === 0) {
-            let len = result.length
-            for (let i = 0; i < 24; i++) {
-                let year = (i >= 10 ? i : '0' + i)
-                let obj: any = {
-                    dns_time: 0,
-                    connect_time: 0,
-                    ttfb_time: 0,
-                    response_time: 0,
-                    parse_dom_time: 0,
-                    time_to_interactive: 0
-                }
-                for (let j = 0; j < len; j++) {
-                    if (result[j].time.split(" ")[1] === (year + ":00:00")) {
-                        obj = result[j]
-                    }
-                }
-                tmp.push({
-                    type: 'DNS查询', year: year, value: obj.dns_time,
-                })
-                tmp.push({
-                    type: 'TCP连接时间', year: year, value: obj.connect_time,
-                })
-                tmp.push({
-                    type: '首字节到达时间', year: year, value: obj.ttfb_time,
-                })
-                tmp.push({
-                    type: '响应的读取时间', year: year, value: obj.response_time,
-                })
-                tmp.push({
-                    type: 'DOM解析的时间', year: year, value: obj.parse_dom_time,
-                })
-                tmp.push({
-                    type: '首次可交互时间', year: year, value: obj.time_to_interactive,
-                })
-            }
-            this.setState({
-                histogram: tmp,
-            })
-        } else {
-            let len = result.length
-            for (let i = 0; i < len; i++) {
-                let { dns_time, ttfb_time,
-                    connect_time, parse_dom_time,
-                    response_time, time_to_interactive, current_day } = result[i]
-                tmp.push({
-                    type: 'DNS查询', year: current_day, value: dns_time,
-                })
-                tmp.push({
-                    type: 'TCP连接时间', year: current_day, value: connect_time,
-                })
-                tmp.push({
-                    type: '首字节到达时间', year: current_day, value: ttfb_time,
-                })
-                tmp.push({
-                    type: '响应的读取时间', year: current_day, value: response_time,
-                })
-                tmp.push({
-                    type: 'DOM解析的时间', year: current_day, value: parse_dom_time,
-                })
-                tmp.push({
-                    type: '首次可交互时间', year: current_day, value: time_to_interactive,
-                })
-            }
-            this.setState({
-                histogram: tmp,
-            })
-        }
+        this.setState({
+            histogram: result,
+        })
     }
 
 
     getOverView = async () => {
         const { selUrl, day, type } = this.state;
-        let result = await get(`monitor/per/oline/current?type=${type}&day=${day}&url=${selUrl}`)
-        // let tmp: Array<any> = []
-        if (Array.isArray(result) && result.length === 1) {
-            let { dns_time, ttfb_time,
-                connect_time, parse_dom_time,
-                response_time, time_to_interactive } = result[0]
-            let tmp = [
-                { type: 'DNS查询', time: dns_time },
-                { type: 'TCP连接时间', time: connect_time },
-                { type: '首字节到达时间', time: ttfb_time },
-                { type: '响应的读取时间', time: response_time },
-                // { type: 'DOM', time: dom_content_loaded_time },
-                { type: 'DOM解析的时间', time: parse_dom_time },
-                // { type: 'DOM完整的加载时间，', time: load_time },
-                { type: '首次可交互时间', time: time_to_interactive },
-            ]
-            this.setState({
-                waterfall: tmp,
-            })
-        } else {
-            this.setState({
-                waterfall: [],
-            })
-        }
-
+        let result = await getOverViewAPI(selUrl, day, type)
+        this.setState({
+            waterfall: result
+        })
 
     }
 

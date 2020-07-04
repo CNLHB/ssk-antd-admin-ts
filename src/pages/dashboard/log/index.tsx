@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { observer, inject } from 'mobx-react'
 import { Tabs, Table } from 'antd';
-import { get } from 'config/api/axios'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import time from 'utils/time'
+import { getLoginLogList } from 'xhr/api/dashboard/log'
 interface LogProps {
     breadStore: BreadInterface
 }
@@ -41,31 +40,15 @@ class Log extends Component<LogProps, {}> {
     fetch = async (params: any) => {
         this.setState({ loading: true });
         let data = this.getRandomuserParams(params)
-        let result = await get(`login/log?page=${data.pagination.current}&rows=${data.pagination.pageSize}`)
-        if (result.items !== null) {
-            let items = result.items.map((item: any, index: number) => {
-                return {
-                    id: item.id,
-                    index: index + 1,
-                    account: item.account,
-                    name: item.name,
-                    adress: item.adress ? item.adress : "未知地点",
-                    time: time.getAlltime(item.createTime)
-                }
-            })
-            this.setState({
-                loading: false,
-                data: items,
-                pagination: {
-                    ...params.pagination,
-                    total: result.total,
-                },
-            });
-        } else {
-            this.setState({
-                loading: false
-            });
-        }
+        let result = await getLoginLogList(data.pagination.current, data.pagination.pageSize)
+        this.setState({
+            loading: false,
+            data: result.items,
+            pagination: {
+                ...params.pagination,
+                total: result.total,
+            },
+        });
     };
     render() {
         const { breadTitle } = this.props.breadStore!

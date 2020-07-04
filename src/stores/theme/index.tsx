@@ -65,14 +65,11 @@ class ThemeStore implements ThemeInterface {
     }
     @action.bound
     public setTheme(theme: ThemeColorType): void {
-        console.log(theme);
         this.theme = theme;
     }
     @action.bound
     public setAffixHeader(affixHeader: boolean): void {
         this.affixHeader = affixHeader;
-        console.log(this.collapsed);
-
         if (this.collapsed) {
             this.fixedHeader.width = `calc(100% - 82px)`
         }
@@ -83,7 +80,6 @@ class ThemeStore implements ThemeInterface {
     }
     @action.bound
     public setMenuWidth(affixMenu: boolean): void {
-        console.log(affixMenu);
     }
     @action.bound
     public setCollapsed(collapsed: boolean): void {
@@ -91,8 +87,6 @@ class ThemeStore implements ThemeInterface {
     }
     @action.bound
     public setLayoutLeft(left: number): void {
-        console.log(left);
-
         this.layoutLeft.marginLeft = left
     }
 

@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { Table, Space, Modal, Form, Input, Row, Col, Tag, Divider, Avatar,message } from 'antd';
+import { Table, Space, Modal, Form, Input, Row, Col, Tag, Divider, Avatar, message } from 'antd';
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { get, post, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
 import './index.less'
 import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
-import time from 'utils/time'
 import { FormInstance } from 'antd/lib/form';
+import { addCategory, getTopicTitleList, freezeTopic } from 'xhr/api/topic/list'
+import { getCategoryList } from 'xhr/api/common'
 const { confirm } = Modal;
 interface UserListProps {
     breadStore: BreadInterface
@@ -54,7 +54,7 @@ class TopicList extends Component<UserListProps> {
         this.getCategory()
     }
     getCategory = async () => {
-        let data = await get('category/list')
+        let data = await getCategoryList()
 
         this.setState({
             category: data
@@ -112,36 +112,16 @@ class TopicList extends Component<UserListProps> {
         value = value === undefined ? "" : value
         let cid1 = (cid === -1 || cid === -2) ? "" : cid
         let data = getRandomuserParams(params)
-        let result = await get(`topic/title/v2?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}&cid=${cid1}`)
-        if (result.items !== null) {
-            let items = result.items.map((item: any) => {
-                return {
-                    key: item.id,
-                    id: item.id,
-                    uName: item.uName,
-                    title: item.title,
-                    total: item.total,
-                    url: item.titlePic,
-                    desc: item.description,
-                    cName: item.cName === null ? "" : item.cName,
-                    createTime: time.gettime(item.createTime),
-                    status: item.display === true ? false : true,
-                    action: [{ id: item.id, text: item.display === true ? "冻结" : "解冻" }, { id: item.id, text: "详情" }]
-                }
-            })
-            this.setState({
-                loading: false,
-                data: items,
-                pagination: {
-                    ...params.pagination,
-                    total: result.total,
-                },
-            });
-        } else {
-            this.setState({
-                loading: false,
-            });
-        }
+        let result = await getTopicTitleList(data.pagination.current, data.pagination.pageSize, value, cid1)
+        this.setState({
+            loading: false,
+            data: result.items,
+            pagination: {
+                ...params.pagination,
+                total: result.total,
+            },
+        });
+
 
 
     };
@@ -157,12 +137,17 @@ class TopicList extends Component<UserListProps> {
             // message.info('Click on menu item.');
         }
         const onFinish = async (values: any) => {
-            post('category', values)
-            this.setState({
-                visible: false,
-            });
-            const { pagination } = this.state;
-            this.fetch({ pagination });
+            let result = await addCategory(values)
+            if (result.code === 0) {
+                this.setState({
+                    visible: false,
+                });
+                const { pagination } = this.state;
+                this.fetch({ pagination });
+            } else {
+                message.error("新增失败！请稍后重试")
+            }
+
         };
         const onFinishFailed = (errorInfo: any) => {
             console.log('Failed:', errorInfo);
@@ -283,13 +268,17 @@ class TopicList extends Component<UserListProps> {
                 icon: <ExclamationCircleOutlined />,
                 okText: '确定',
                 cancelText: '返回',
-                onOk: () => {
-                    putParm('topic/title/freeze', obj).then(() => {
+                onOk: async () => {
+                    let result = await freezeTopic(obj)
+                    if (result.code === 0) {
+                        message.success("操作成功")
                         const { pagination, selectedCategory, value } = this.state;
                         this.fetch({ pagination }, value, selectedCategory);
-                        message.success("操作成功")
-                    })
+                    } else {
+                        message.error("操作失败")
+                    }
                 },
+
                 onCancel() {
                     console.log('Cancel');
                 },

@@ -4,12 +4,13 @@ import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
 import { FormInstance } from 'antd/lib/form';
-import { get, post, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import time from 'utils/time'
+import { getCategoryList, addCategory } from 'xhr/api/common'
+import { updateCategory } from 'xhr/api/dyncmic/cetegory'
 const { confirm } = Modal;
 interface UserListProps {
     breadStore: BreadInterface
@@ -65,7 +66,7 @@ class CategoryList extends Component<UserListProps> {
         });
     };
     getCategory = async () => {
-        let data = await get('category/list')
+        let data = await getCategoryList()
 
         this.setState({
             category: data
@@ -94,7 +95,7 @@ class CategoryList extends Component<UserListProps> {
     fetch = async (params: any, value?: string | null) => {
         this.setState({ loading: true });
         value = value === undefined ? "" : value
-        let result = await get('category/list')
+        let result = await getCategoryList()
         let items = result.map((item: any) => {
             return {
                 key: item.id,
@@ -205,12 +206,18 @@ class CategoryList extends Component<UserListProps> {
         ];
         const onFinish = async (values: any) => {
             console.log('Success:', values);
-            post('category', values)
-            this.setState({
-                visible: false,
-            });
-            const { pagination } = this.state;
-            this.fetch({ pagination });
+            let result = await addCategory(values)
+            if (result.code === 0) {
+                message.info("新增成功~")
+                this.setState({
+                    visible: false,
+                });
+                const { pagination } = this.state;
+                this.fetch({ pagination });
+            } else {
+                message.error("新增失败!")
+            }
+
         };
 
         const onFinishFailed = (errorInfo: any) => {
@@ -223,12 +230,16 @@ class CategoryList extends Component<UserListProps> {
                 icon: <ExclamationCircleOutlined />,
                 okText: '确定',
                 cancelText: '返回',
-                onOk: () => {
-                    putParm('category', obj).then(() => {
+                onOk: async () => {
+                    let result = await updateCategory(obj)
+                    if (result.code === 0) {
+                        message.success("操作成功")
                         const { pagination } = this.state;
                         this.fetch({ pagination });
-                        message.success("操作成功")
-                    })
+                    } else {
+                        message.error("操作失败")
+                    }
+
                 },
                 onCancel() {
                     console.log('Cancel');

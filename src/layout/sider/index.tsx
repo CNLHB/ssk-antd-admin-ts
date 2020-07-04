@@ -59,7 +59,6 @@ export default class SiderWrap extends React.Component<SiderProps, SiderState> {
             })
         }
 
-        console.log(broken);
     }
 
     render() {

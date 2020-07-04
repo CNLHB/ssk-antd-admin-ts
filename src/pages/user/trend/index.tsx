@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Button, Card, Tabs, Typography, Row, Col, Space } from 'antd';
 import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
-import { get } from 'config/api/axios'
+import { getUserTrend } from 'xhr/api/user/trend'
+
 import {
     PieChart,
     TinyAreaChart,
@@ -52,33 +53,11 @@ class UserTrend extends Component<{}, {}> {
         this.fetch()
     }
     fetch = async () => {
-        let result = await get('user/trend')
-        let monthList = result.data.monthList.map((item: any) => {
-            return { text: item.current_day, value: item.total }
-        })
-        let weekList = result.data.weekList.map((item: any, index: number) => {
-            return { text: item.current_day, value: item.total }
-        })
-        let len = result.data.yearList.length
-        let yearList = result.data.yearList.splice(len - 12, 12).map((item: any) => {
-            return { text: item.months, value: item.total }
-        })
+        let result = await getUserTrend()
         this.setState({
-            showData: weekList,
+            showData: result.weekList,
             loading: false,
-            data: {
-                yesterday: result.data.yesterday,
-                total: result.data.total,
-                week: result.data.week,
-                woman: result.data.woman,
-                upWeek: result.data.upWeek,
-                year: result.data.year,
-                man: result.data.man,
-                day: result.data.day,
-                monthList: monthList,
-                weekList: weekList,
-                yearList: yearList
-            }
+            data: result
         })
 
     }
@@ -139,7 +118,6 @@ class UserTrend extends Component<{}, {}> {
             </Col>
         })}
         </Row>
-        // <Button>Extra Action</Button>;
         return (
 
             <div

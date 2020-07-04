@@ -2,14 +2,14 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-07 12:48:57
- * @LastEditTime: 2020-07-04 01:41:44
+ * @LastEditTime: 2020-07-05 02:29:43
  * @LastEditors: seven
  */
 import axios from "axios";
 import { message } from 'antd'
 export let base = process.env.NODE_ENV === 'development' ? "http://192.168.31.164:8081/api/" : "http://ssk.xquery.cn/api/";
 // let socketBaseUrl = process.env.NODE_ENV === 'development' ? "ws://192.168.31.164:8081/api/" : "ws://api.hfb.xquery.cn/api/";
-axios.defaults.timeout = 15000;                        //响应时间
+axios.defaults.timeout = 10000;    //响应时间
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';        //配置请求头
 axios.defaults.baseURL = base;   //配置接口地址
 // 请求前拦截
@@ -38,11 +38,10 @@ axios.interceptors.response.use(
         return Promise.resolve(res.data);
     },
     err => {
-        console.log(err)
         if (err.toString().indexOf("Network") !== -1) {
             return Promise.resolve(500);
         }
-        if (err.toString().indexOf("404") === -1 && typeof err === "object") {
+        if (err.response) {
             try {
                 const errCode = err.response.status
                 switch (errCode) {
@@ -55,17 +54,16 @@ axios.interceptors.response.use(
                         if (msg === 'TOKEN已过期!') {
                             // message.error('身份过期，请重新登录')
                             // window.location.href = '/login'
-                            return
                         }
+                        return Promise.resolve(err.response.data);
                         break
                     case 403:
                         message.error('身份过期请重新登录', 3)
                         window.location.href = '/login'
                         break
                     case 404:
-                        message.error('请求错误,未找到该资源')
-                        Promise.resolve(404);
-                        console.log('请求错误,未找到该资源')
+                        // message.error('请求错误,未找到该资源')
+                        return Promise.resolve(err.response.data);
                         break
                     case 405:
                         console.log('请求方法未允许')
@@ -141,21 +139,20 @@ export const postParam = (url: string, params: object): any => {
     }).then(res => {
         return res
     }).catch(err => {
-        console.log(err)
         return err
     });
 };
 
-export const get = (url: string): any => {
-    return axios({
+export const get = <T>(url: string): any => {
+    let result = axios({
         method: "get",
         url: url
     }).then(res => {
         return res
     }).catch(err => {
-        console.log(err)
         return err
     });
+    return result
 };
 export const put = (url: string, params: object): any => {
     return axios({

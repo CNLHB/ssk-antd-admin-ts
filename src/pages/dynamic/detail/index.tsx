@@ -3,11 +3,12 @@ import { Table, Space, Modal, Input, Row, Col, Tag, Divider, message } from 'ant
 import { observer, inject } from 'mobx-react'
 import PageBread from 'components/page-breadcrumb/index'
 import { BreadInterface } from 'stores/models/breadcrumb/index'
-import { get, putParm } from 'config/api/axios'
 import { Menu, Dropdown, Button } from 'antd';
 import './index.less'
 import { ExclamationCircleOutlined, DownOutlined } from '@ant-design/icons';
-import time from 'utils/time'
+import { topicActiveList, getDynamicList, freezeTopic } from 'xhr/api/dyncmic/list'
+import { getCategoryList } from 'xhr/api/common/index'
+
 const { confirm } = Modal;
 interface UserListProps {
     breadStore: BreadInterface
@@ -45,7 +46,7 @@ class DynamicList extends Component<UserListProps> {
         this.getCategory()
     }
     getCategory = async () => {
-        let data = await get('category/list')
+        let data = await getCategoryList()
 
         this.setState({
             category: data
@@ -81,36 +82,15 @@ class DynamicList extends Component<UserListProps> {
         value = value === undefined ? "" : value
         let cid1 = (cid === -1 || cid === -2) ? "" : cid
         let data = getRandomuserParams(params)
-        let result = await get(`topic/v2/page?page=${data.pagination.current}&rows=${data.pagination.pageSize}&search=${value}&cid=${cid1}`)
-        if (typeof result === "object") {
-            let items = result.items.map((item: any) => {
-                return {
-                    key: item.id,
-                    id: item.id,
-                    cName: item.cName,
-                    // title: item.title,
-                    email: item.email,
-                    like: item.infoNum.likeNum,
-                    content: item.title,
-                    uName: item.username,
-                    createTime: time.gettime(item.createTime),
-                    status: item.display === true ? false : true,
-                    action: [{ id: item.id, text: item.display === true ? "冻结" : "解冻" }, { id: item.id, text: "详情" }]
-                }
-            })
-            this.setState({
-                loading: false,
-                data: items,
-                pagination: {
-                    ...params.pagination,
-                    total: result.total,
-                },
-            });
-        } else {
-            this.setState({
-                loading: false,
-            });
-        }
+        let result = await getDynamicList(data.pagination.current, data.pagination.pageSize, value, cid1)
+        this.setState({
+            loading: false,
+            data: result.items,
+            pagination: {
+                ...params.pagination,
+                total: result.total,
+            },
+        });
 
 
     };
@@ -229,20 +209,27 @@ class DynamicList extends Component<UserListProps> {
                 icon: <ExclamationCircleOutlined />,
                 okText: '确定',
                 cancelText: '返回',
-                onOk: () => {
+                onOk: async () => {
                     if (index) {
-                        putParm('topic/active/list', obj).then(() => {
+                        let result = await topicActiveList(obj)
+                        if (result.code === 0) {
+                            message.success("操作成功")
                             const { pagination, selectedCategory, value } = this.state;
                             this.fetch({ pagination }, value, selectedCategory);
-                            message.success("操作成功")
-                        })
+                        } else {
+                            message.error("操作失败")
+                        }
                         return
                     }
-                    putParm('topic/freeze', obj).then(() => {
+                    let result = await freezeTopic(obj)
+                    if (result.code === 0) {
+                        message.success("操作成功")
                         const { pagination, selectedCategory, value } = this.state;
                         this.fetch({ pagination }, value, selectedCategory);
-                        message.success("操作成功")
-                    })
+                    } else {
+                        message.error("操作失败")
+                    }
+
                 },
                 onCancel() {
                     console.log('Cancel');

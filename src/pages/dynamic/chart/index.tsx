@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, Card, Tabs, Typography, Row, Col, Space } from 'antd';
 import { CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
-import { get } from 'config/api/axios'
+import { getDyncnmicTrend } from 'xhr/api/dyncmic/trend'
 import {
     PieChart,
     TinyAreaChart,
@@ -19,7 +19,6 @@ class DynamicTrend extends Component<{}, {}> {
         loading: true,
         selectedBtn: 2,
         showText: "本周",
-
         showData: [],
         data: {
             yesterday: 0,
@@ -55,32 +54,11 @@ class DynamicTrend extends Component<{}, {}> {
         this.fetch()
     }
     fetch = async () => {
-        let result = await get('topic/trend')
-        let monthList = result.data.monthList.map((item: any) => {
-            return { text: item.current_day, value: item.total }
-        })
-        let weekList = result.data.weekList.map((item: any, index: number) => {
-            return { text: item.current_day, value: item.total }
-        })
-        let len = result.data.yearList.length > 12 ? result.data.yearList.length : 12
-        let yearList = result.data.yearList.splice(len - 12, 12).map((item: any) => {
-            return { text: item.months, value: item.total }
-        })
+        let result = await getDyncnmicTrend()
         this.setState({
-            showData: weekList,
+            showData: result.weekList,
             loading: false,
-            data: {
-                yesterday: result.data.yesterday,
-                total: result.data.total,
-                week: result.data.week,
-                upWeek: result.data.upWeek,
-                year: result.data.year,
-                day: result.data.day,
-                monthList: monthList,
-                weekList: weekList,
-                yearList: yearList,
-                categoryTotal: result.data.categoryTotal
-            }
+            data: result
         })
 
     }

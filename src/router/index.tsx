@@ -20,18 +20,20 @@ export const AppRoutes: RouteType[] = [
         exact: true,
     },
     {
+        pathname: "/404",
+        exact: true,
+        auth: false,
+        component: lazy(() => import("pages/exception/404/index")),
+    }, {
         pathname: "/",
         exact: false,
         auth: true,
         component: Layout,
-    }, {
-        pathname: "/404",
-        exact: true,
-        component: NoMatch,
     },
 ];
 //
 export const ContentRoutes: RouteType[] = [
+
     {
         pathname: "/",
         exact: true,
