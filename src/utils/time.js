@@ -2,7 +2,7 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-09 17:08:02
- * @LastEditTime: 2020-06-27 16:57:33
+ * @LastEditTime: 2020-06-27 23:34:28
  * @LastEditors: seven
  */
 const gettime = {
@@ -65,7 +65,7 @@ const gettime = {
     getAlltime(shorttime) {
         shorttime = new Date(shorttime).getTime();
         shorttime = shorttime.toString().length < 13 ? shorttime * 1000 : shorttime;
-        return this.dateFormat(new Date(shorttime), "{Y}-{MM}-{DD} {t}:{ii}");
+        return this.dateFormat(new Date(shorttime), "{Y}-{MM}-{DD} {hh}:{ii}:{ss}");
     },
     parseNumber(num) {
         return num < 10 ? "0" + num : num;

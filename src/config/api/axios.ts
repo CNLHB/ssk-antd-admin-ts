@@ -2,7 +2,7 @@
  * @Description:
  * @Author: seven
  * @Date: 2020-06-07 12:48:57
- * @LastEditTime: 2020-06-19 01:06:19
+ * @LastEditTime: 2020-07-04 01:41:44
  * @LastEditors: seven
  */
 import axios from "axios";
@@ -53,14 +53,14 @@ axios.interceptors.response.use(
                         // 权限处理 重新登录 清空token
                         const msg = err.response.data.message
                         if (msg === 'TOKEN已过期!') {
-                            message.error('身份过期，请重新登录')
-                            window.location.href = '/login'
+                            // message.error('身份过期，请重新登录')
+                            // window.location.href = '/login'
                             return
                         }
                         break
                     case 403:
                         message.error('身份过期请重新登录', 3)
-                        window.location.href = '#/login'
+                        window.location.href = '/login'
                         break
                     case 404:
                         message.error('请求错误,未找到该资源')
@@ -112,7 +112,6 @@ export const post = (url: string, params: object): any => {
         url: url,
         data: params
     }).then(res => {
-        console.log(res)
         return res
     }).catch(err => {
         console.log(err)

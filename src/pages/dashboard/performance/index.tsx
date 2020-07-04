@@ -350,7 +350,7 @@ class Performance extends Component<MonitorProps, MonitorState> {
                                     </Space>
 
                                 </Col>
-                                <Col md={24} lg={16} xl={16}>
+                                <Col xs={24} md={24} lg={16} xl={16}>
                                     {/* 分组层叠柱状图 */}
                                     <Card size="small" title="页面加载时间详情 " bordered={false}>
                                         <LineChart

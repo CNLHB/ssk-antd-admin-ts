@@ -36,12 +36,7 @@ export default class LayoutApp extends React.Component<LayoutProps, LayoutState>
 
     }
     async componentDidMount() {
-        let { auth } = this.props.adminStore!
-        let status = await auth()
-        if (!status) {
-            console.log(status)
-            // window.location.href = "login"
-        }
+
     }
     showDrawer = (): void => {
         const { setCollapsed } = this.props.themeStore!

@@ -1,5 +1,6 @@
 // 创建store
 import { action, observable } from "mobx";
+
 import { AdminInterface } from "../models/user/user";
 import { post, get } from 'config/api/axios'
 
@@ -18,7 +19,6 @@ class AdminStore implements AdminInterface {
     @action.bound
     public async getTopic(): Promise<any> {
         let result = await get('topic/list/' + this.admin.id);
-        console.log(result);
         if (result) {
 
         }
@@ -42,7 +42,7 @@ class AdminStore implements AdminInterface {
     @action.bound
     public async auth(): Promise<any> {
         let result = await get('auth/verify');
-        if (!result.status) {
+        if (!result) {
             return false
         }
         window.localStorage.setItem("token", result.data.token);
@@ -63,7 +63,6 @@ class AdminStore implements AdminInterface {
         if (result === 500 || typeof result === "string") {
             return result === 500 ? 500 : 404
         }
-        console.log(result);
 
         if (!result.status) {
             return false
